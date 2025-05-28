@@ -227,3 +227,4 @@ atualizarRelogio();<link rel="manifest" href="manifest.json">
       const iframe = document.createElement('iframe');
       iframe.id = id;
       iframe.src = url || 'about:
+<button id="installBtn" hidden>Instalar Mini Windows</button>
