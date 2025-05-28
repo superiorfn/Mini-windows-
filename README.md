@@ -248,3 +248,32 @@ atualizarRelogio();<link rel="manifest" href="manifest.json">
     }
   ]
 }
+<div id="config-panel" class="settings">
+  <h2>Configurações</h2>
+
+  <label>Tema:
+    <select id="theme-select">
+      <option value="light">Claro</option>
+      <option value="dark">Escuro</option>
+      <option value="custom">Personalizado</option>
+    </select>
+  </label>
+
+  <label>Cor personalizada:
+    <input type="color" id="custom-color" value="#1a73e8">
+  </label>
+
+  <label>Papel de parede:
+    <input type="file" id="wallpaper-upload" accept="image/*">
+  </label>
+
+  <label>
+    <input type="checkbox" id="toggle-animations"> Desativar animações
+  </label>
+
+  <label>
+    <input type="checkbox" id="toggle-start-menu"> Mostrar menu iniciar
+  </label>
+
+  <button onclick="resetSettings()">Redefinir</button>
+</div>
