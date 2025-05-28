@@ -125,3 +125,24 @@ atualizarRelogio();<link rel="manifest" href="manifest.json">
     }
   ]
 }
+{
+  "name": "Mini Windows",
+  "short_name": "MiniWin",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1e1e1e",
+  "theme_color": "#1e1e1e",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
