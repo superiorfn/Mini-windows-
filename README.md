@@ -274,6 +274,38 @@ atualizarRelogio();<link rel="manifest" href="manifest.json">
   <label>
     <input type="checkbox" id="toggle-start-menu"> Mostrar menu iniciar
   </label>
+:root {
+  --theme-color: #ffffff;
+  --background-image: none;
+  --animations: all 0.3s ease;
+}
 
+body {
+  background-color: var(--theme-color);
+  background-image: var(--background-image);
+  background-size: cover;
+  background-position: center;
+  transition: var(--animations);
+}
+
+.no-animations * {
+  transition: none !important;
+  animation: none !important;
+}
+
+#start-menu {
+  display: block;
+}
+
+#start-menu.hidden {
+  display: none;
+}
+
+.settings {
+  background: rgba(255,255,255,0.9);
+  padding: 1em;
+  max-width: 300px;
+  border-radius: 10px;
+}
   <button onclick="resetSettings()">Redefinir</button>
 </div>
