@@ -228,3 +228,23 @@ atualizarRelogio();<link rel="manifest" href="manifest.json">
       iframe.id = id;
       iframe.src = url || 'about:
 <button id="installBtn" hidden>Instalar Mini Windows</button>
+{
+  "name": "Mini Windows",
+  "short_name": "MiniWin",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a1a1a",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
