@@ -105,3 +105,23 @@ function atualizarRelogio() {
 
 setInterval(atualizarRelogio, 1000);
 atualizarRelogio();<link rel="manifest" href="manifest.json">
+{
+  "name": "Mini Windows",
+  "short_name": "MiniWin",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#202020",
+  "theme_color": "#303030",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
