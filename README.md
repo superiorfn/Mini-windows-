@@ -346,3 +346,5 @@ body {
     const parent = document.query
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pintura@10.0.0/pintura.css" />
 <script src="https://cdn.jsdelivr.net/npm/pintura@10.0.0/pintura.iife.js"></script>
+<button onclick="abrirEditorImagem()">Abrir Editor de Imagem</button>
+<input type="file" id="imagemInput" accept="image/*" hidden>
