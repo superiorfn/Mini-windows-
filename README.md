@@ -1,4 +1,31 @@
-https://cdn.jsdelivr.net/npm/pintura@10.0.0/pintura.cssmini-windows/
+<script>
+  function abrirEditorImagem() {
+    document.getElementById('imagemInput').click();
+  }
+
+  document.getElementById('imagemInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      Pintura.openDefaultEditor({
+        src: reader.result,
+        imageReader: Pintura.createDefaultImageReader(),
+        imageWriter: Pintura.createDefaultImageWriter(),
+        util: Pintura.util,
+        locale: Pintura.locales.en, // pode mudar para pt
+        onProcess: (output) => {
+          const link = document.createElement('a');
+          link.href = output.dest;
+          link.download = 'imagem-editada.png';
+          link.click();
+        },
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+</script>https://cdn.jsdelivr.net/npm/pintura@10.0.0/pintura.cssmini-windows/
 │
 ├── index.html
 ├── style.css
