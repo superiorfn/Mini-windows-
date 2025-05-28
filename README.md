@@ -309,3 +309,38 @@ body {
 }
   <button onclick="resetSettings()">Redefinir</button>
 </div>
+<script>
+(function optimizeMiniWindows() {
+  // 1. Remove animações e transições pesadas
+  const disableAnimations = () => {
+    const style = document.createElement('style');
+    style.innerHTML = `
+      * {
+        transition: none !important;
+        animation: none !important;
+        will-change: auto !important;
+      }
+    `;
+    document.head.appendChild(style);
+  };
+
+  // 2. Remove elementos ocultos do DOM para liberar memória
+  const cleanHiddenElements = () => {
+    document.querySelectorAll('body *').forEach(el => {
+      const style = getComputedStyle(el);
+      if (style.display === 'none' || style.visibility === 'hidden') {
+        el.remove();
+      }
+    });
+  };
+
+  // 3. Lazy load de imagens
+  const enableLazyLoad = () => {
+    document.querySelectorAll('img').forEach(img => {
+      if (!img.loading) img.loading = "lazy";
+    });
+  };
+
+  // 4. Compactar grandes estruturas em fragmentos
+  const fragmentWrap = (parentSelector) => {
+    const parent = document.query
