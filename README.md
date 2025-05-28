@@ -1,4 +1,4 @@
-mini-windows/
+https://cdn.jsdelivr.net/npm/pintura@10.0.0/pintura.cssmini-windows/
 │
 ├── index.html
 ├── style.css
