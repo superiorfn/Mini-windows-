@@ -148,3 +148,82 @@ atualizarRelogio();<link rel="manifest" href="manifest.json">
 }
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1e1e1e">
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>MiniWin Navegador</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1e1e1e;
+      color: white;
+      overflow: hidden;
+    }
+    #nav-bar {
+      display: flex;
+      align-items: center;
+      background-color: #2d2d2d;
+      padding: 8px;
+      gap: 8px;
+    }
+    #url-input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      outline: none;
+    }
+    button {
+      padding: 6px 10px;
+      border: none;
+      background-color: #0078d7;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #tabs {
+      display: flex;
+      background-color: #1c1c1c;
+      overflow-x: auto;
+      border-bottom: 1px solid #333;
+    }
+    .tab {
+      padding: 8px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      background-color: #2a2a2a;
+      border-right: 1px solid #444;
+    }
+    .tab.active {
+      background-color: #0078d7;
+    }
+    #iframe-container {
+      width: 100%;
+      height: calc(100vh - 90px);
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="nav-bar">
+    <input type="text" id="url-input" placeholder="Digite uma URL ou arquivo local">
+    <button onclick="novaAba()">Nova Aba</button>
+    <button onclick="navegar()">Ir</button>
+  </div>
+  <div id="tabs"></div>
+  <div id="iframe-container"></div>  <script>
+    let abas = [];
+    let abaAtiva = null;
+
+    function novaAba(url = '') {
+      const id = 'aba-' + Date.now();
+      const iframe = document.createElement('iframe');
+      iframe.id = id;
+      iframe.src = url || 'about:
