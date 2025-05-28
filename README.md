@@ -146,3 +146,5 @@ atualizarRelogio();<link rel="manifest" href="manifest.json">
     }
   ]
 }
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e1e1e">
