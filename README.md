@@ -375,3 +375,99 @@ body {
 <script src="https://cdn.jsdelivr.net/npm/pintura@10.0.0/pintura.iife.js"></script>
 <button onclick="abrirEditorImagem()">Abrir Editor de Imagem</button>
 <input type="file" id="imagemInput" accept="image/*" hidden>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mini Windows Avançado</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pintura@10.0.0/pintura.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #0e0e0e;
+      color: white;
+      overflow: hidden;
+    }
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #1a1a1a;
+      padding: 5px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      z-index: 1000;
+    }
+    button {
+      background: #333;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .window {
+      position: absolute;
+      top: 60px;
+      left: 50px;
+      width: 80%;
+      max-width: 800px;
+      height: 70%;
+      background: #222;
+      border: 1px solid #444;
+      box-shadow: 0 0 15px #000;
+      display: none;
+      flex-direction: column;
+      z-index: 900;
+    }
+    .window-header {
+      background: #111;
+      padding: 8px;
+      cursor: move;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .window-body {
+      flex: 1;
+      overflow: auto;
+      background: #1b1b1b;
+    }
+    .close-btn {
+      background: #e00;
+      border: none;
+      color: white;
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+    .resizer {
+      width: 100%;
+      height: 10px;
+      cursor: ns-resize;
+    }
+    iframe, canvas, div.editor {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Taskbar -->
+  <div class="taskbar">
+    <button onclick="openWindow('imageEditor')">🎨 Editor de Imagem</button>
+    <button onclick="openWindow('audioEditor')">🎧 Editor de Áudio</button>
+    <button onclick="openWindow('codeEditor')">💻 Editor de Código</button>
+  </div>
+
+  <!-- Editor de Imagem -->
+  <div id="imageEditor" class="window">
+    <div class="window-header">
+      🎨 Editor de Imagem
+      <button class="close-btn" onclick="closeWindow('imageEditor')">X</button>
+    </div>
+    <div class="window-body">
+      <input type="file" accept="
