@@ -1186,3 +1186,11 @@ brew install webp        # macOS
 
 # Exemplo de conversão
 cwebp wallpaper.jpg -o wallpaper.webp
+/mini-windows/
+  └── assets/
+      ├── wallpapers/
+      │    └── default.webp
+      ├── icons/
+      │    └── calculator.webp
+      └── logos/
+           └── miniwin-logo.webp
