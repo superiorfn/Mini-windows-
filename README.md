@@ -1304,3 +1304,26 @@ window.addEventListener("DOMContentLoaded", enableAdBlock);
 │       │   ├── boxedwine.html
 │       │   ├── boxedwine.js
 │       │   └── ... (arquivos do BoxedWine)
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Emulador Windows</title>
+  <style>
+    html, body {
+      margin: 0;
+      background: #111;
+      color: #0f0;
+      font-family: monospace;
+      height: 100%;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <iframe src="boxedwine/boxedwine.html"></iframe>
+</body>
+</html>
