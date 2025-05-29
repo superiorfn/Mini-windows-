@@ -4746,3 +4746,93 @@ document.addEventListener("keydown", e => {
   </script>
 </body>
 </html>![1000009962](https://github.com/user-attachments/assets/cfd3f58f-52df-47b2-a074-59060c82fe5d)
+<script>
+    const soundOpen = document.getElementById("sound-open");
+    const soundNav = document.getElementById("sound-nav");
+    const soundOk = document.getElementById("sound-ok");
+    const soundError = document.getElementById("sound-error");
+    const notificationArea = document.getElementById("notifications");
+
+    function playNav() { soundNav.currentTime = 0; soundNav.play(); }
+    function playOk() { soundOk.currentTime = 0; soundOk.play(); }
+    function playError() { soundError.currentTime = 0; soundError.play(); }
+
+    function toggleStartMenu() {
+      const menu = document.getElementById("startMenu");
+      if (menu.classList.contains("active")) {
+        menu.classList.remove("active");
+        setTimeout(() => (menu.style.display = "none"), 300);
+      } else {
+        menu.style.display = "block";
+        setTimeout(() => menu.classList.add("active"), 10);
+        soundOpen.currentTime = 0;
+        soundOpen.play();
+      }
+    }
+
+    function showToast(text) {
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = text;
+      notificationArea.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function openApp(appName) {
+      showToast(`Abrindo ${appName}...`);
+      window.open(`apps/${appName}/index.html`, "_blank");
+    }
+
+    function launchGame(path) {
+      const win = window.open(path, '_blank', 'width=1024,height=768');
+      saveLastGame(path);
+    }
+
+    function saveLastGame(path) {
+      localStorage.setItem("lastGame", path);
+    }
+
+    function loadLastGame() {
+      const path = localStorage.getItem("lastGame");
+      if (path) {
+        showToast("Carregando jogo salvo...");
+        launchGame(path);
+      } else {
+        showToast("Nenhum jogo salvo encontrado.");
+      }
+    }
+
+    function showGameGallery() {
+      document.getElementById('gameGallery').classList.remove('hidden');
+    }
+
+    function closeGameGallery() {
+      document.getElementById('gameGallery').classList.add('hidden');
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "m" || e.key === "M" || e.key === "Enter") {
+        toggleStartMenu();
+      }
+      if (e.key === "g" || e.key === "G") {
+        showGameGallery();
+      }
+      if (e.key === "l" || e.key === "L") {
+        loadLastGame();
+      }
+    });
+
+    // Gamepad support
+    window.addEventListener("gamepadconnected", function(e) {
+      showToast("Controle conectado!");
+    });
+
+    setInterval(() => {
+      const gamepads = navigator.getGamepads();
+      const gp = gamepads[0];
+      if (gp) {
+        if (gp.buttons[0].pressed) toggleStartMenu(); // A button
+        if (gp.buttons[1].pressed) showGameGallery(); // B button
+      }
+    }, 100);
+  </script>
