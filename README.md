@@ -5601,3 +5601,69 @@ function setPerformanceMode(mode) {
 // Aplicar ao iniciar
 applyPerformanceMode(performanceMode);
 </script>
+<!-- Mini Windows com Filtros de Performance (Avançado) --><!-- Menu Flutuante de Performance --><div id="performanceMenu" class="fixed bottom-4 right-4 z-50 bg-black bg-opacity-80 text-white p-4 rounded-2xl shadow-lg space-y-2 w-64">
+  <h3 class="font-bold text-lg mb-2">⚙️ Filtro de Performance</h3>
+  <button onclick="setPerformanceMode('max')" class="w-full bg-green-700 hover:bg-green-600 px-3 py-2 rounded">🟢 Máximo</button>
+  <button onclick="setPerformanceMode('balanced')" class="w-full bg-blue-700 hover:bg-blue-600 px-3 py-2 rounded">⚖️ Equilibrado</button>
+  <button onclick="setPerformanceMode('eco')" class="w-full bg-yellow-700 hover:bg-yellow-600 px-3 py-2 rounded">🟡 Economia</button>
+  <button onclick="setPerformanceMode('auto')" class="w-full bg-purple-700 hover:bg-purple-600 px-3 py-2 rounded">🔄 Autoajuste</button>
+  <button onclick="setPerformanceMode('lowres')" class="w-full bg-red-700 hover:bg-red-600 px-3 py-2 rounded">🟥 Baixa Resolução</button>
+  <button onclick="setPerformanceMode('lowram')" class="w-full bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded">💾 Baixo Uso de RAM</button>
+</div><script>
+const root = document.documentElement;
+let performanceMode = localStorage.getItem("performanceMode") || "balanced";
+
+function applyPerformanceMode(mode) {
+  performanceMode = mode;
+  localStorage.setItem("performanceMode", mode);
+
+  switch (mode) {
+    case "max":
+      root.style.setProperty("--animation-speed", "0s");
+      root.style.setProperty("--shadow", "none");
+      root.style.setProperty("--resolution-scale", "1");
+      root.style.setProperty("--preload-apps", "true");
+      break;
+    case "balanced":
+      root.style.setProperty("--animation-speed", "0.3s");
+      root.style.setProperty("--shadow", "0 4px 12px rgba(0,0,0,0.3)");
+      root.style.setProperty("--resolution-scale", "1");
+      root.style.setProperty("--preload-apps", "false");
+      break;
+    case "eco":
+      root.style.setProperty("--animation-speed", "0.1s");
+      root.style.setProperty("--shadow", "none");
+      root.style.setProperty("--resolution-scale", "0.75");
+      root.style.setProperty("--preload-apps", "false");
+      break;
+    case "auto":
+      let fpsValue = parseInt(document.getElementById("fps").innerText.split(": ")[1]);
+      if (fpsValue < 25) applyPerformanceMode("eco");
+      else if (fpsValue > 50) applyPerformanceMode("max");
+      else applyPerformanceMode("balanced");
+      return;
+    case "lowres":
+      document.body.style.imageRendering = "pixelated";
+      document.querySelectorAll("canvas, img, video").forEach(el => el.style.imageRendering = "pixelated");
+      break;
+    case "lowram":
+      document.querySelectorAll(".app").forEach(app => {
+        if (!app.classList.contains("active")) app.style.display = "none";
+      });
+      break;
+  }
+
+  document.body.style.setProperty("transition", `all var(--animation-speed)`);
+  document.querySelectorAll("*").forEach(el => {
+    el.style.boxShadow = getComputedStyle(root).getPropertyValue("--shadow");
+  });
+}
+
+function setPerformanceMode(mode) {
+  applyPerformanceMode(mode);
+  alert("Modo de performance: " + mode);
+}
+
+// Aplicar ao iniciar
+applyPerformanceMode(performanceMode);
+</script>
