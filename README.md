@@ -4293,3 +4293,202 @@ function showToast(text) {
     index.htmlfunction launchGame(path) {
   window.open(path, "_blank", "fullscreen=yes");
 }
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Xbox OS</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <script defer src="system.js"></script>
+  <link rel="icon" type="image/png" href="assets/icons/xbox.png">
+  <style>
+    body {
+      background-image: url('assets/wallpapers/xbox-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+    .menu-btn {
+      background-color: #107c10;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .menu-btn:hover {
+      transform: scale(1.1);
+      background-color: #159c15;
+    }
+    #startMenu {
+      position: absolute;
+      bottom: 70px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      display: none;
+      min-width: 250px;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease-in-out;
+    }
+    #startMenu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    button {
+      background: none;
+      color: white;
+      text-align: left;
+      width: 100%;
+      padding: 0.25rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    button:hover {
+      background: rgba(255,255,255,0.1);
+      transform: scale(1.05);
+    }
+    #sidebar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 200px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 0;
+    }
+    .sidebar-icon {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .sidebar-icon:hover {
+      background-color: #159c15;
+      transform: scale(1.02);
+    }
+    .sidebar-icon span {
+      white-space: nowrap;
+    }
+    #notifications {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 100;
+    }
+    .toast {
+      background: rgba(0,0,0,0.85);
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      backdrop-filter: blur(6px);
+      animation: fadeInOut 3s ease forwards;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(-10px); }
+      10% { opacity: 1; transform: translateY(0); }
+      90% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body class="text-white font-sans">
+  <audio id="sound-open" src="assets/sounds/menu-open.mp3" preload="auto"></audio>
+  <audio id="sound-nav" src="assets/sounds/menu-nav.mp3" preload="auto"></audio>
+  <audio id="sound-ok" src="assets/sounds/confirm.mp3" preload="auto"></audio>
+  <audio id="sound-error" src="assets/sounds/error.mp3" preload="auto"></audio>  <div id="desktop" class="relative w-screen h-screen overflow-hidden">
+    <div id="notifications"></div><!-- Barra lateral -->
+<div id="sidebar">
+  <div class="sidebar-icon" onclick="playOk(); showToast('Abrindo loja...')">🛒 <span>Loja</span></div>
+  <div class="sidebar-icon" onclick="playOk(); showToast('Abrindo configurações...')">⚙️ <span>Configurações</span></div>
+  <div class="sidebar-icon" onclick="playOk(); showToast('Jogos carregando...'); openGames()">🎮 <span>Jogos</span></div>
+  <div class="sidebar-icon" onclick="playOk(); showToast('Ajuda aberta')">❓ <span>Ajuda</span></div>
+  <div class="sidebar-icon" onclick="playError(); showToast('Erro simulado!')">⛔ <span>Erro</span></div>
+</div>
+
+<!-- Menu Iniciar -->
+<div class="absolute bottom-4 left-56">
+  <div class="menu-btn" onclick="toggleStartMenu()">X</div>
+</div>
+<div id="startMenu">
+  <div class="text-lg font-semibold mb-2">Menu Iniciar</div>
+  <ul class="space-y-1">
+    <li><button onclick="playNav(); openApp('youtube')">📺 YouTube</button></li>
+    <li><button onclick="playNav(); openApp('netflix')">🎬 Netflix</button></li>
+    <li><button onclick="playNav(); openApp('photopea')">🖌️ Photopea</button></li>
+    <li><button onclick="playNav(); openApp('gmail')">✉️ Gmail</button></li>
+    <li><button onclick="playNav(); openGames()">🎮 Meus Jogos</button></li>
+  </ul>
+</div>
+
+  </div>
+  <script>
+    const soundOpen = document.getElementById("sound-open");
+    const soundNav = document.getElementById("sound-nav");
+    const soundOk = document.getElementById("sound-ok");
+    const soundError = document.getElementById("sound-error");
+    const notificationArea = document.getElementById("notifications");function playNav() {
+  soundNav.currentTime = 0;
+  soundNav.play();
+}
+function playOk() {
+  soundOk.currentTime = 0;
+  soundOk.play();
+}
+function playError() {
+  soundError.currentTime = 0;
+  soundError.play();
+}
+function toggleStartMenu() {
+  const menu = document.getElementById("startMenu");
+  if (menu.classList.contains("active")) {
+    menu.classList.remove("active");
+    setTimeout(() => (menu.style.display = "none"), 300);
+  } else {
+    menu.style.display = "block";
+    setTimeout(() => menu.classList.add("active"), 10);
+    soundOpen.currentTime = 0;
+    soundOpen.play();
+  }
+}
+document.addEventListener("keydown", e => {
+  if (e.key === "m" || e.key === "M" || e.key === "Enter") {
+    toggleStartMenu();
+  }
+});
+function showToast(text) {
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = text;
+  notificationArea.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+function openApp(appName) {
+  showToast(`Abrindo ${appName}...`);
+  window.open(`apps/${appName}/index.html`, "_blank");
+}
+function openGames() {
+  window.open("games/index.html", "_blank");
+}
+
+  </script>
+</body>
+</html>
