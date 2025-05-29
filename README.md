@@ -1072,3 +1072,4 @@ npx cap init miniwindows com.exemplo.miniwindows
 npx cap add android
 npx cap copy
 npx cap open android
+npm create tauri-app
