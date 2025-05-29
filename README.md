@@ -679,3 +679,58 @@ self.addEventListener("fetch", (event) => {
         ├── boxedwine.wasm
         ├── wineData/
         └── app.exe  ← (exemplo)
+<!-- Janela BoxedWine -->
+<div class="window" id="boxedwineWindow">
+  <div class="window-header">
+    🧪 Emulador BoxedWine
+    <button class="close-btn" onclick="closeWindow('boxedwineWindow')">X</button>
+  </div>
+  <div class="window-body" style="padding:0; height:80vh;">
+    <iframe src="apps/boxedwine/index.html" style="width:100%; height:100%; border:none;"></iframe>
+  </div>
+</div><!-- Janela BoxedWine -->
+<div class="window" id="boxedwineWindow">
+  <div class="window-header">
+    🧪 Emulador BoxedWine
+    <button class="close-btn" onclick="closeWindow('boxedwineWindow')">X</button>
+  </div>
+  <div class="window-body" style="padding:0; height:80vh;">
+    <iframe src="apps/boxedwine/index.html" style="width:100%; height:100%; border:none;"></iframe>
+calculator.html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora Avançada</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      background: #121212;
+      color: white;
+    }
+    #calc {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+    }
+    #display {
+      width: 100%;
+      height: 60px;
+      font-size: 24px;
+      margin-bottom: 10px;
+      background: #1e1e1e;
+      color: white;
+      text-align: right;
+      padding: 10px;
+      box-sizing: border-box;
+      border: none;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    button {
+      padding: 15px;
+      font-size: 18px;
