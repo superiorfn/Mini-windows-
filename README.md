@@ -1066,3 +1066,4 @@ self.addEventListener("fetch", (event) => {
     ]
   }
 }
+npm run tauri build
