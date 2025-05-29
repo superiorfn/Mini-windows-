@@ -3392,3 +3392,67 @@ function carregarEmails() {
     })
     .catch(err => console.error("Erro ao carregar e-mails:", err));
 }
+// js/optimizador.js
+document.addEventListener("DOMContentLoaded", () => {
+  // Reduz redraws e repaint desnecessários
+  document.body.style.willChange = "transform";
+
+  // Desativa animações globais para performance
+  const style = document.createElement("style");
+  style.textContent = `
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Substitui sombras pesadas por sombras leves
+  document.querySelectorAll("*").forEach(el => {
+    if (getComputedStyle(el).boxShadow) {
+      el.style.boxShadow = "0 0 4px rgba(0,0,0,0.2)";
+    }
+  });
+
+  // Remove event listeners pesados em background
+  window.removeEventListener("mousemove", () => {});
+  window.removeEventListener("scroll", () => {});
+  window.removeEventListener("resize", () => {});
+
+  // Desativa pré-carregamento de imagens grandes
+  const imgs = document.querySelectorAll("img");
+  imgs.forEach(img => {
+    img.loading = "lazy";
+  });
+
+  // Suspende iframes ocultos
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting && entry.target.tagName === "IFRAME") {
+        entry.target.src = "";
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll("iframe").forEach(iframe => {
+    observer.observe(iframe);
+  });
+
+  console.log("Mini Windows otimizado para Xbox");
+});
+<script src="js/optimizador.js"></script>
+html, body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #1a1a1a;
+  color: #fff;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+img {
+  max-width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
