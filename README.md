@@ -1566,3 +1566,4 @@ function initializeInputHandler() {
 }
 
 initializeInputHandler();
+<script src="system/input-handler.js" defer></script>
