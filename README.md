@@ -3758,3 +3758,168 @@ document.addEventListener("keydown", e => {
   </script>
 </body>
 </html>
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Xbox OS</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <script defer src="system.js"></script>
+  <link rel="icon" type="image/png" href="assets/icons/xbox.png">
+  <style>
+    body {
+      background-image: url('assets/wallpapers/xbox-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+    .menu-btn {
+      background-color: #107c10;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .menu-btn:hover {
+      transform: scale(1.1);
+      background-color: #159c15;
+    }
+    #startMenu {
+      position: absolute;
+      bottom: 70px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      display: none;
+      min-width: 200px;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease-in-out;
+    }
+    #startMenu.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    button {
+      background: none;
+      color: white;
+      text-align: left;
+      width: 100%;
+      padding: 0.25rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    button:hover {
+      background: rgba(255,255,255,0.1);
+      transform: scale(1.05);
+    }
+    /* Barra lateral */
+    #sidebar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 60px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    .sidebar-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0.5rem 0;
+      background-color: #107c10;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+      transition: transform 0.2s, background 0.2s;
+      cursor: pointer;
+    }
+    .sidebar-icon:hover {
+      transform: scale(1.1);
+      background-color: #159c15;
+    }
+  </style>
+</head>
+<body class="text-white font-sans">
+  <audio id="sound-open" src="assets/sounds/menu-open.mp3" preload="auto"></audio>
+  <audio id="sound-nav" src="assets/sounds/menu-nav.mp3" preload="auto"></audio>
+  <audio id="sound-ok" src="assets/sounds/confirm.mp3" preload="auto"></audio>
+  <audio id="sound-error" src="assets/sounds/error.mp3" preload="auto"></audio>  <div id="desktop" class="relative w-screen h-screen overflow-hidden">
+    <!-- Barra lateral -->
+    <div id="sidebar">
+      <div class="sidebar-icon" onclick="playOk(); alert('Abrindo loja...')">🛒</div>
+      <div class="sidebar-icon" onclick="playOk(); alert('Abrindo configurações...')">⚙️</div>
+      <div class="sidebar-icon" onclick="playOk(); alert('Ajuda')">❓</div>
+      <div class="sidebar-icon" onclick="playError(); alert('Erro de exemplo!')">⛔</div>
+    </div><!-- Menu Iniciar -->
+<div class="absolute bottom-4 left-20">
+  <div class="menu-btn" onclick="toggleStartMenu()">X</div>
+</div>
+<div id="startMenu">
+  <div class="text-lg font-semibold mb-2">Menu Iniciar</div>
+  <ul class="space-y-1">
+    <li><button onclick="playNav(); openApp('youtube')">📺 YouTube</button></li>
+    <li><button onclick="playNav(); openApp('netflix')">🎬 Netflix</button></li>
+    <li><button onclick="playNav(); openApp('photopea')">🖌️ Photopea</button></li>
+    <li><button onclick="playNav(); openApp('gmail')">✉️ Gmail</button></li>
+  </ul>
+</div>
+
+  </div>
+  <script>
+    const soundOpen = document.getElementById("sound-open");
+    const soundNav = document.getElementById("sound-nav");
+    const soundOk = document.getElementById("sound-ok");
+    const soundError = document.getElementById("sound-error");function playNav() {
+  soundNav.currentTime = 0;
+  soundNav.play();
+}
+function playOk() {
+  soundOk.currentTime = 0;
+  soundOk.play();
+}
+function playError() {
+  soundError.currentTime = 0;
+  soundError.play();
+}
+
+function toggleStartMenu() {
+  const menu = document.getElementById("startMenu");
+  if (menu.classList.contains("active")) {
+    menu.classList.remove("active");
+    setTimeout(() => (menu.style.display = "none"), 300);
+  } else {
+    menu.style.display = "block";
+    setTimeout(() => menu.classList.add("active"), 10);
+    soundOpen.currentTime = 0;
+    soundOpen.play();
+  }
+}
+
+// Tecla M ou Enter para abrir menu
+document.addEventListener("keydown", e => {
+  if (e.key === "m" || e.key === "M" || e.key === "Enter") {
+    toggleStartMenu();
+  }
+});
+
+  </script>
+</body>
+</html>
