@@ -3477,3 +3477,37 @@ mini-windows/
   "background_color": "#000000",
   "theme_color": "#111111"
 }
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Windows Xbox</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <script defer src="system.js"></script>
+  <link rel="icon" type="image/png" href="assets/icons/windows.png">
+</head>
+<body class="bg-gray-900 text-white font-sans">
+  <div id="desktop" class="relative w-screen h-screen overflow-hidden">
+    <!-- Atalhos na "Área de Trabalho" -->
+    <div class="absolute top-4 left-4 space-y-4">
+      <button onclick="openApp('youtube')" class="flex flex-col items-center">
+        <img src="assets/icons/youtube.png" class="w-12 h-12" />
+        <span class="text-xs">YouTube</span>
+      </button>
+      <button onclick="openApp('netflix')" class="flex flex-col items-center">
+        <img src="assets/icons/netflix.png" class="w-12 h-12" />
+        <span class="text-xs">Netflix</span>
+      </button>
+      <button onclick="openApp('photopea')" class="flex flex-col items-center">
+        <img src="assets/icons/photopea.png" class="w-12 h-12" />
+        <span class="text-xs">Photopea</span>
+      </button>
+      <button onclick="openApp('gmail')" class="flex flex-col items-center">
+        <img src="assets/icons/gmail.png" class="w-12 h-12" />
+        <span class="text-xs">Gmail</span>
+      </button>
+    </div>
+  </div>
+</body>
+</html>
