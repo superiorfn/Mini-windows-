@@ -1657,3 +1657,4 @@ setInterval(() => {
   if (gamepadIndex === null) checkGamepadConnection();
   else pollGamepad();
 }, 100);
+<script src="system/gamepad-handler.js" defer></script>
