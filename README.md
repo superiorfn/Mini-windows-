@@ -1257,3 +1257,42 @@ window.addEventListener("DOMContentLoaded", () => {
   applyCpuOptimizations();
 });
 <script src="scripts/cpu-optimizer.js" defer></script>
+// Lista de seletores comuns de anúncios
+const adSelectors = [
+  'iframe[src*="ads"]',
+  'iframe[src*="doubleclick"]',
+  'div[id*="ad"]',
+  'div[class*="ad"]',
+  'div[class*="sponsor"]',
+  'div[class*="promo"]',
+  'script[src*="ad"]',
+  'ins.adsbygoogle',
+  'div[data-ad]',
+];
+
+// Função que remove elementos de anúncio no conteúdo de um iframe
+function removeAdsInIframe(iframe) {
+  try {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    adSelectors.forEach(selector => {
+      const elements = doc.querySelectorAll(selector);
+      elements.forEach(el => el.remove());
+    });
+  } catch (e) {
+    console.warn("Não foi possível acessar o conteúdo do iframe por política de CORS.");
+  }
+}
+
+// Monitora todos os iframes do navegador embutido
+function enableAdBlock() {
+  const iframes = document.querySelectorAll("iframe.browser-frame");
+  iframes.forEach(iframe => {
+    iframe.addEventListener("load", () => {
+      setTimeout(() => removeAdsInIframe(iframe), 2000); // Espera o site carregar
+    });
+  });
+}
+
+// Ativa automaticamente
+window.addEventListener("DOMContentLoaded", enableAdBlock);
+<script src="../../system/adguard-lite.js" defer></script>
