@@ -734,3 +734,12 @@ calculator.html
     button {
       padding: 15px;
       font-size: 18px;
+<div class="window" id="calcWindow">
+  <div class="window-header">
+    🧮 Calculadora Avançada
+    <button onclick="closeWindow('calcWindow')">X</button>
+  </div>
+  <div class="window-body" style="height:80vh;padding:0;">
+    <iframe src="apps/calculadora/calculator.html" style="width:100%; height:100%; border:none;"></iframe>
+  </div>
+</div><button onclick="openWindow('calcWindow')">🧮 Calculadora</button>
