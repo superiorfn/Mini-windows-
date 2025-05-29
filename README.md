@@ -1105,3 +1105,5 @@ npm create tauri-app{
     }
   }
 }
+npm install
+npm run tauri build
