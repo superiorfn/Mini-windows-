@@ -2371,3 +2371,159 @@ window.addEventListener("DOMContentLoaded", createKeyboard);#virtual-keyboard {
 #tools input[type="file"] {
   color: white;
 }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+<script>
+const canvas = new fabric.Canvas('canvas');
+let drawingMode = false;
+let currentTool = null;
+let history = [];
+
+function init() {
+  canvas.isDrawingMode = false;
+  canvas.freeDrawingBrush.color = "#ffffff";
+  canvas.freeDrawingBrush.width = 3;
+  saveState();
+}
+
+document.getElementById('upload').addEventListener('change', e => {
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    fabric.Image.fromURL(event.target.result, img => {
+      img.set({ left: 50, top: 50, scaleX: 0.5, scaleY: 0.5 });
+      canvas.add(img).setActiveObject(img);
+      saveState();
+    });
+  };
+  reader.readAsDataURL(e.target.files[0]);
+});
+
+function saveState() {
+  const json = JSON.stringify(canvas);
+  if (history[history.length - 1] !== json) {
+    history.push(json);
+  }
+}
+
+function undo() {
+  if (history.length > 1) {
+    history.pop();
+    const prev = history[history.length - 1];
+    canvas.loadFromJSON(prev, () => canvas.renderAll());
+  }
+}
+
+function clearCanvas() {
+  canvas.clear();
+  saveState();
+}
+
+function addText() {
+  const text = new fabric.IText("Texto", {
+    left: 100,
+    top: 100,
+    fill: '#fff',
+    fontSize: 32
+  });
+  canvas.add(text).setActiveObject(text);
+  saveState();
+}
+
+function save() {
+  const link = document.createElement("a");
+  link.download = "editado.png";
+  link.href = canvas.toDataURL({ format: "png" });
+  link.click();
+}
+
+function applyFilter(type) {
+  const obj = canvas.getActiveObject();
+  if (!obj || obj.type !== "image") return alert("Selecione uma imagem.");
+
+  let filter = null;
+  switch (type) {
+    case "grayscale": filter = new fabric.Image.filters.Grayscale(); break;
+    case "sepia": filter = new fabric.Image.filters.Sepia(); break;
+    case "invert": filter = new fabric.Image.filters.Invert(); break;
+    case "blur": filter = new fabric.Image.filters.Blur({ blur: 0.5 }); break;
+    case "sharpen": filter = new fabric.Image.filters.Convolute({
+      matrix: [ 0, -1, 0, -1, 5, -1, 0, -1, 0 ]
+    }); break;
+    case "vintage": filter = new fabric.Image.filters.Sepia2(); break;
+  }
+
+  obj.filters.push(filter);
+  obj.applyFilters();
+  canvas.renderAll();
+  saveState();
+}
+
+function adjust(prop, value) {
+  const obj = canvas.getActiveObject();
+  if (!obj || obj.type !== "image") return alert("Selecione uma imagem.");
+  let filter = null;
+
+  if (prop === "brightness") {
+    filter = new fabric.Image.filters.Brightness({ brightness: value });
+  }
+
+  obj.filters.push(filter);
+  obj.applyFilters();
+  canvas.renderAll();
+  saveState();
+}
+
+function toggleBrush() {
+  drawingMode = !drawingMode;
+  canvas.isDrawingMode = drawingMode;
+  currentTool = "brush";
+  if (drawingMode) canvas.discardActiveObject();
+  saveState();
+}
+
+function cropActiveImage() {
+  const obj = canvas.getActiveObject();
+  if (!obj || obj.type !== "image") return alert("Selecione uma imagem.");
+
+  const left = obj.left, top = obj.top;
+  const width = obj.width * obj.scaleX;
+  const height = obj.height * obj.scaleY;
+
+  const cropped = new fabric.Image(obj.getElement(), {
+    left: left,
+    top: top,
+    width: width,
+    height: height,
+    scaleX: 1,
+    scaleY: 1,
+    cropX: left,
+    cropY: top
+  });
+
+  canvas.remove(obj);
+  canvas.add(cropped).setActiveObject(cropped);
+  saveState();
+}
+
+window.addEventListener("DOMContentLoaded", init);
+</script><div id="tools">
+  <input type="file" id="upload" accept="image/*">
+  <button onclick="addText()">Texto</button>
+  <button onclick="toggleBrush()">🖌️ Pincel</button>
+  <button onclick="cropActiveImage()">✂️ Recortar</button>
+  <button onclick="applyFilter('grayscale')">P&B</button>
+  <button onclick="applyFilter('sepia')">Sépia</button>
+  <button onclick="applyFilter('invert')">Negativo</button>
+  <button onclick="applyFilter('blur')">Desfoque</button>
+  <button onclick="applyFilter('sharpen')">Nitidez</button>
+  <button onclick="applyFilter('vintage')">Vintage</button>
+  <button onclick="adjust('brightness', 0.1)">+Brilho</button>
+  <button onclick="adjust('brightness', -0.1)">−Brilho</button>
+  <button onclick="undo()">Desfazer</button>
+  <button onclick="clearCanvas()">Limpar</button>
+  <button onclick="save()">Salvar</button>
+</div>canvas {
+  border: 1px solid #555;
+  background: #000;
+  max-width: 100%;
+  height: auto;
+}
