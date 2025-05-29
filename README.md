@@ -2914,3 +2914,336 @@ self.addEventListener('fetch', e => {
 bubblewrap init --manifest=https://SEU_SITE/manifest.json
 bubblewrap build
 bubblewrap install
+const express = require("express");
+const { ImapFlow } = require("imapflow");
+const nodemailer = require("nodemailer");
+const cors = require("cors");
+require("dotenv").config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.post("/email/receber", async (req, res) => {
+  const client = new ImapFlow({
+    host: "imap.gmail.com",
+    port: 993,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }
+  });
+
+  await client.connect();
+  let mailbox = await client.selectMailbox("INBOX");
+  let messages = [];
+
+  for await (let msg of client.fetch("1:*", { envelope: true, source: true })) {
+    messages.push({
+      from: msg.envelope.from[0].address,
+      subject: msg.envelope.subject
+    });
+  }
+
+  await client.logout();
+  res.json(messages);
+});
+
+app.post("/email/enviar", async (req, res) => {
+  const { to, subject, text } = req.body;
+
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }
+  });
+
+  let info = await transporter.sendMail({ from: process.env.EMAIL, to, subject, text });
+  res.json({ messageId: info.messageId });
+});
+
+app.listen(3000, () => console.log("Servidor rodando em http://localhost:3000"));
+const express = require("express");
+const { ImapFlow } = require("imapflow");
+const nodemailer = require("nodemailer");
+const cors = require("cors");
+require("dotenv").config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.post("/email/receber", async (req, res) => {
+  const client = new ImapFlow({
+    host: "imap.gmail.com",
+    port: 993,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }
+  });
+
+  await client.connect();
+  let mailbox = await client.selectMailbox("INBOX");
+  let messages = [];
+
+  for await (let msg of client.fetch("1:*", { envelope: true, source: true })) {
+    messages.push({
+      from: msg.envelope.from[0].address,
+      subject: msg.envelope.subject
+    });
+  }
+
+  await client.logout();
+  res.json(messages);
+});
+
+app.post("/email/enviar", async (req, res) => {
+  const { to, subject, text } = req.body;
+
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }
+  });
+
+  let info = await transporter.sendMail({ from: process.env.EMAIL, to, subject, text });
+  res.json({ messageId: info.messageId });
+});
+
+app.listen(3000, () => console.log("Servidor rodando em http://localhost:3000")); mini-windows/
+├── index.html               ← Mini Windows principal
+├── js/
+│   └── sistema.js           ← Gerenciador de janelas
+├── apps/
+│   └── mini-gmail.html      ← Mini Gmail completo
+├── icons/
+│   └── gmail-icon.png       ← Ícone do Gmail
+├── servidor/
+│   └── server.js            ← Backend seguro
+│   └── .env                 ← Senhas protegidas
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Gmail</title>
+  <style>
+    body { font-family: sans-serif; padding: 10px; }
+    #login, #app { max-width: 600px; margin: auto; }
+    input, textarea, button { width: 100%; margin: 5px 0; padding: 8px; }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <h2>Entrar no Mini Gmail</h2>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="senha" placeholder="Senha" />
+  <button onclick="fazerLogin()">Entrar</button>
+</div>
+
+<div id="app" style="display:none;">
+  <h2>Mini Gmail</h2>
+  <p id="usuarioAtual"></p>
+  <button onclick="logout()">Trocar de conta</button>
+
+  <h3>Enviar E-mail</h3>
+  <input id="para" placeholder="Para" />
+  <input id="assunto" placeholder="Assunto" />
+  <textarea id="mensagem" placeholder="Mensagem"></textarea>
+  <button onclick="enviar()">Enviar</button>
+</div>
+
+<script>
+const api = "http://localhost:3000";
+let emailUsuario = null;
+
+window.onload = () => {
+  const salvo = localStorage.getItem("usuarioLogado");
+  if (salvo) {
+    emailUsuario = salvo;
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    document.getElementById("usuarioAtual").textContent = "Logado como: " + emailUsuario;
+  }
+};
+
+function fazerLogin() {
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+
+  fetch(`${api}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, senha })
+  })
+  .then(res => res.json())
+  .then(d => {
+    if (d.sucesso) {
+      emailUsuario = email;
+      localStorage.setItem("usuarioLogado", email);
+      document.getElementById("login").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      document.getElementById("usuarioAtual").textContent = "Logado como: " + email;
+    } else {
+      alert("Login inválido");
+    }
+  });
+}
+
+function enviar() {
+  fetch(`${api}/enviar`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      de: emailUsuario,
+      to: document.getElementById("para").value,
+      subject: document.getElementById("assunto").value,
+      text: document.getElementById("mensagem").value
+    })
+  }).then(() => alert("Enviado com sucesso!"));
+}
+
+function logout() {
+  localStorage.removeItem("usuarioLogado");
+  location.reload();
+}
+</script>
+
+</body>
+</html>
+const express = require("express");
+const cors = require("cors");
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const contas = {
+  "exemplo@gmail.com": { senha: "1234", nome: "Usuário 1", smtpPass: process.env.SENHA_1 },
+  "demo@teste.com": { senha: "abcd", nome: "Usuário 2", smtpPass: process.env.SENHA_2 }
+};
+
+app.post("/login", (req, res) => {
+  const { email, senha } = req.body;
+  const conta = contas[email];
+  if (conta && conta.senha === senha) {
+    res.json({ sucesso: true, nome: conta.nome });
+  } else {
+    res.json({ sucesso: false });
+  }
+});
+
+app.post("/enviar", async (req, res) => {
+  const { de, to, subject, text } = req.body;
+  const conta = contas[de];
+  if (!conta) return res.status(403).json({ erro: "Conta inválida" });
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: de, pass: conta.smtpPass }
+  });
+
+  await transporter.sendMail({
+    from: de,
+    to,
+    subject,
+    text
+  });
+
+  res.json({ enviado: true });
+});
+
+app.listen(3000, () => console.log("Servidor Mini Gmail rodando na porta 3000"));
+SENHA_1=sua-senha-de-app-google-1
+SENHA_2=sua-senha-de-app-google-2
+const appsRegistrados = [
+  {
+    nome: "Mini Gmail",
+    icone: "icons/gmail-icon.png",
+    arquivo: "apps/mini-gmail.html",
+    largura: 800,
+    altura: 600
+  },
+  // ...outros apps
+];
+<button onclick="abrirApp('Mini Gmail')">
+  <img src="icons/gmail-icon.png" width="24"> Mini Gmail
+</button>
+const appsRegistrados = [
+  {
+    nome: "Mini Gmail",
+    icone: "icons/gmail-icon.png",
+    arquivo: "apps/mini-gmail.html",
+    largura: 800,
+    altura: 600
+  },
+  // ...outros apps
+];
+<button onclick="abrirApp('Mini Gmail')">
+  <img src="icons/gmail-icon.png" width="24"> Mini Gmail
+</button>
+function abrirApp(nomeApp) {
+  const app = appsRegistrados.find(a => a.nome === nomeApp);
+  if (!app) return;
+
+  abrirJanelaApp(app.nome, app.arquivo, app.icone, app.largura, app.altura);
+}
+// server.js (ver resposta anterior para versão completa)
+app.post("/login", ...);
+app.post("/enviar", ...);
+app.get("/receber", ...);
+SENHA_1=senhaDeAppParaConta1
+SENHA_2=senhaDeAppParaConta2
+// Salvar sessão no login:
+localStorage.setItem("usuarioLogado", email);
+window.onload = () => {
+  const user = localStorage.getItem("usuarioLogado");
+  if (user) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    carregarEmails(user);
+  }
+};
+const express = require("express");
+const cors = require("cors");
+const nodemailer = require("nodemailer");
+const { ImapFlow } = require("imapflow");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const PORT = 3000;
+
+let contas = {
+  "exemplo@gmail.com": { senha: "1234", nome: "Usuário 1", smtpPass: process.env.SENHA_1 },
+  "demo@teste.com": { senha: "abcd", nome: "Usuário 2", smtpPass: process.env.SENHA_2 }
+};
+
+app.post("/login", (req, res) => {
+  const { email, senha } = req.body;
+  const conta = contas[email];
+  if (conta && conta.senha === senha) {
+    res.json({ sucesso: true, nome: conta.nome });
+  } else {
+    res.json({ sucesso: false });
+  }
+});
+
+app.post("/enviar", async (req, res) => {
+  const { de, to, subject, text } = req.body;
+  const conta = contas[de];
+
+  if (!conta) return
