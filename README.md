@@ -6199,3 +6199,279 @@ document.addEventListener("keydown", e => {
 // Aplicar ao iniciar
 applyPerformanceMode(performanceMode);
 </script>
+<!-- Mini Windows com Otimização + Bluetooth --><!-- Notificação de Input Lag --><div id="inputLagNotify" class="fixed bottom-16 right-4 bg-orange-600 text-white px-4 py-2 rounded-lg shadow-lg hidden transition-opacity duration-500">⚡ Modo de Resposta Rápida Ativado</div><!-- Status Bluetooth --><div id="bluetoothStatus" class="fixed top-4 right-4 bg-blue-800 text-white px-4 py-1 rounded shadow text-sm">🔵 Bluetooth: Desconectado</div><!-- Menu Flutuante de Performance --><div id="performanceMenu" class="fixed bottom-4 right-4 z-50 bg-black bg-opacity-80 text-white p-4 rounded-2xl shadow-lg space-y-2 w-64">
+  <h3 class="font-bold text-lg mb-2">⚙️ Filtro de Performance</h3>
+  <button onclick="setPerformanceMode('max')" class="w-full bg-green-700 hover:bg-green-600 px-3 py-2 rounded">🟢 Máximo</button>
+  <button onclick="setPerformanceMode('balanced')" class="w-full bg-blue-700 hover:bg-blue-600 px-3 py-2 rounded">⚖️ Equilibrado</button>
+  <button onclick="setPerformanceMode('eco')" class="w-full bg-yellow-700 hover:bg-yellow-600 px-3 py-2 rounded">🟡 Economia</button>
+  <button onclick="setPerformanceMode('auto')" class="w-full bg-purple-700 hover:bg-purple-600 px-3 py-2 rounded">🔄 Autoajuste</button>
+  <button onclick="setPerformanceMode('lowres')" class="w-full bg-red-700 hover:bg-red-600 px-3 py-2 rounded">🟥 Baixa Resolução</button>
+  <button onclick="setPerformanceMode('lowram')" class="w-full bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded">💾 Baixo Uso de RAM</button>
+  <button onclick="setPerformanceMode('netopt')" class="w-full bg-cyan-700 hover:bg-cyan-600 px-3 py-2 rounded">🌐 Otimizar Rede</button>
+  <button onclick="setPerformanceMode('gpuopt')" class="w-full bg-pink-700 hover:bg-pink-600 px-3 py-2 rounded">🎮 Reduzir GPU</button>
+  <button onclick="setPerformanceMode('lowinputlag')" class="w-full bg-orange-700 hover:bg-orange-600 px-3 py-2 rounded">⚡ Reduzir Input Lag</button>
+</div><script>
+const root = document.documentElement;
+let performanceMode = localStorage.getItem("performanceMode") || "balanced";
+
+function applyPerformanceMode(mode) {
+  performanceMode = mode;
+  localStorage.setItem("performanceMode", mode);
+
+  switch (mode) {
+    case "max":
+      root.style.setProperty("--animation-speed", "0s");
+      root.style.setProperty("--shadow", "none");
+      root.style.setProperty("--resolution-scale", "1");
+      root.style.setProperty("--preload-apps", "true");
+      break;
+    case "balanced":
+      root.style.setProperty("--animation-speed", "0.3s");
+      root.style.setProperty("--shadow", "0 4px 12px rgba(0,0,0,0.3)");
+      root.style.setProperty("--resolution-scale", "1");
+      root.style.setProperty("--preload-apps", "false");
+      break;
+    case "eco":
+      root.style.setProperty("--animation-speed", "0.1s");
+      root.style.setProperty("--shadow", "none");
+      root.style.setProperty("--resolution-scale", "0.75");
+      root.style.setProperty("--preload-apps", "false");
+      break;
+    case "auto":
+      let fpsValue = parseInt(document.getElementById("fps").innerText.split(": ")[1]);
+      if (fpsValue < 25) applyPerformanceMode("eco");
+      else if (fpsValue > 50) applyPerformanceMode("max");
+      else applyPerformanceMode("balanced");
+      return;
+    case "lowres":
+      document.body.style.imageRendering = "pixelated";
+      document.querySelectorAll("canvas, img, video").forEach(el => el.style.imageRendering = "pixelated");
+      break;
+    case "lowram":
+      document.querySelectorAll(".app").forEach(app => {
+        if (!app.classList.contains("active")) app.style.display = "none";
+      });
+      break;
+    case "netopt":
+      optimizeNetwork();
+      break;
+    case "gpuopt":
+      optimizeGPU();
+      break;
+    case "lowinputlag":
+      reduceInputLag();
+      showInputLagNotification();
+      break;
+  }
+
+  document.body.style.setProperty("transition", `all var(--animation-speed)`);
+  document.querySelectorAll("*").forEach(el => {
+    el.style.boxShadow = getComputedStyle(root).getPropertyValue("--shadow");
+  });
+}
+
+function optimizeNetwork() {
+  document.querySelectorAll(".app").forEach(app => {
+    if (!app.classList.contains("active")) {
+      app.dataset.network = "paused";
+    }
+  });
+  alert("🌐 Otimização de rede ativada! Apps ociosos pausados.");
+}
+
+function optimizeGPU() {
+  document.body.style.filter = "brightness(0.9) contrast(0.9) saturate(0.8)";
+  document.querySelectorAll(".effect, .glow, .particle").forEach(el => el.remove());
+  alert("🎮 Otimização de GPU aplicada: efeitos reduzidos.");
+}
+
+function reduceInputLag() {
+  document.body.style.setProperty("cursor", "default");
+  document.querySelectorAll("* :not(input):not(textarea)").forEach(el => el.tabIndex = -1);
+  document.addEventListener("keydown", e => e.preventDefault(), { passive: true });
+  document.addEventListener("mousedown", e => e.preventDefault(), { passive: true });
+  console.log("⚡ Input Lag minimizado");
+}
+
+function showInputLagNotification() {
+  const notify = document.getElementById("inputLagNotify");
+  notify.classList.remove("hidden");
+  notify.style.opacity = 1;
+  setTimeout(() => {
+    notify.style.opacity = 0;
+    setTimeout(() => notify.classList.add("hidden"), 500);
+  }, 3000);
+}
+
+function setPerformanceMode(mode) {
+  applyPerformanceMode(mode);
+  alert("Modo de performance: " + mode);
+}
+
+async function checkBluetooth() {
+  if (!navigator.bluetooth) {
+    document.getElementById("bluetoothStatus").innerText = "❌ Bluetooth não suportado";
+    return;
+  }
+  try {
+    await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+    document.getElementById("bluetoothStatus").innerText = "🔵 Bluetooth: Conectado";
+  } catch {
+    document.getElementById("bluetoothStatus").innerText = "🔵 Bluetooth: Desconectado";
+  }
+}
+
+window.addEventListener("gamepadconnected", () => setPerformanceMode("lowinputlag"));
+document.addEventListener("keydown", e => {
+  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Space", "w", "a", "s", "d"].includes(e.key.toLowerCase())) {
+    setPerformanceMode("lowinputlag");
+  }
+});
+
+applyPerformanceMode(performanceMode);
+checkBluetooth();
+</script><!-- Mini Windows com Bluetooth Avançado --><!-- Status Bluetooth --><div id="bluetoothStatus" class="fixed top-4 right-4 bg-blue-800 text-white px-4 py-1 rounded shadow text-sm">🔵 Bluetooth: Desconectado</div>
+<button onclick="toggleBluetooth()" class="fixed top-16 right-4 bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded shadow">🔁 Alternar Bluetooth</button><!-- Lista de dispositivos emparelhados --><div id="pairedDevices" class="fixed top-28 right-4 bg-blue-900 text-white p-2 rounded shadow w-64 max-h-48 overflow-y-auto hidden">
+  <h4 class="font-bold mb-2">🔗 Dispositivos Emparelhados:</h4>
+  <ul id="devicesList" class="space-y-1 text-sm"></ul>
+</div><script>
+let bluetoothEnabled = false;
+let knownDevices = JSON.parse(localStorage.getItem("knownBluetoothDevices")) || [];
+
+function updateBluetoothUI(status) {
+  document.getElementById("bluetoothStatus").innerText = status;
+}
+
+async function requestAndRememberDevice() {
+  try {
+    const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+    if (!knownDevices.includes(device.name)) {
+      knownDevices.push(device.name);
+      localStorage.setItem("knownBluetoothDevices", JSON.stringify(knownDevices));
+    }
+    listKnownDevices();
+    updateBluetoothUI(`🔵 Bluetooth: Conectado a ${device.name}`);
+  } catch {
+    updateBluetoothUI("🔵 Bluetooth: Desconectado");
+  }
+}
+
+function listKnownDevices() {
+  const listEl = document.getElementById("devicesList");
+  const container = document.getElementById("pairedDevices");
+  listEl.innerHTML = "";
+  if (knownDevices.length > 0) {
+    container.classList.remove("hidden");
+    knownDevices.forEach(name => {
+      const li = document.createElement("li");
+      li.textContent = `📱 ${name}`;
+      listEl.appendChild(li);
+    });
+  } else {
+    container.classList.add("hidden");
+  }
+}
+
+function toggleBluetooth() {
+  if (!navigator.bluetooth) {
+    updateBluetoothUI("❌ Bluetooth não suportado");
+    return;
+  }
+  bluetoothEnabled = !bluetoothEnabled;
+  if (bluetoothEnabled) {
+    requestAndRememberDevice();
+  } else {
+    updateBluetoothUI("🔵 Bluetooth: Desativado");
+  }
+}
+
+window.addEventListener("load", () => {
+  listKnownDevices();
+  if (!navigator.bluetooth) updateBluetoothUI("❌ Bluetooth não suportado");
+});
+</script><!-- Mini Windows com Bluetooth Avançado com Reescolha e Bateria --><!-- Status Bluetooth --><div id="bluetoothStatus" class="fixed top-4 right-4 bg-blue-800 text-white px-4 py-1 rounded shadow text-sm">🔵 Bluetooth: Desconectado</div>
+<button onclick="toggleBluetooth()" class="fixed top-16 right-4 bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded shadow">🔁 Alternar Bluetooth</button><!-- Lista de dispositivos emparelhados --><div id="pairedDevices" class="fixed top-28 right-4 bg-blue-900 text-white p-2 rounded shadow w-72 max-h-60 overflow-y-auto hidden">
+  <h4 class="font-bold mb-2">🔗 Dispositivos Emparelhados:</h4>
+  <ul id="devicesList" class="space-y-1 text-sm"></ul>
+</div><script>
+let bluetoothEnabled = false;
+let knownDevices = JSON.parse(localStorage.getItem("knownBluetoothDevices")) || [];
+
+function updateBluetoothUI(status) {
+  document.getElementById("bluetoothStatus").innerText = status;
+}
+
+async function requestAndRememberDevice() {
+  try {
+    const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['battery_service'] });
+    if (!knownDevices.find(d => d.id === device.id)) {
+      knownDevices.push({ id: device.id, name: device.name });
+      localStorage.setItem("knownBluetoothDevices", JSON.stringify(knownDevices));
+    }
+    updateBluetoothUI(`🔵 Conectado a ${device.name}`);
+    listKnownDevices();
+    readBatteryLevel(device);
+  } catch {
+    updateBluetoothUI("🔵 Bluetooth: Desconectado");
+  }
+}
+
+function listKnownDevices() {
+  const listEl = document.getElementById("devicesList");
+  const container = document.getElementById("pairedDevices");
+  listEl.innerHTML = "";
+  if (knownDevices.length > 0) {
+    container.classList.remove("hidden");
+    knownDevices.forEach(d => {
+      const li = document.createElement("li");
+      li.innerHTML = `📱 <button onclick="connectToDeviceById('${d.id}')" class="underline hover:text-lime-300">${d.name}</button>`;
+      listEl.appendChild(li);
+    });
+  } else {
+    container.classList.add("hidden");
+  }
+}
+
+async function connectToDeviceById(deviceId) {
+  try {
+    const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true }); // Fallback
+    if (device.id === deviceId) {
+      updateBluetoothUI(`🔵 Reconectado a ${device.name}`);
+      readBatteryLevel(device);
+    }
+  } catch (err) {
+    console.warn("Erro ao reconectar:", err);
+  }
+}
+
+async function readBatteryLevel(device) {
+  try {
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService('battery_service');
+    const batteryLevel = await service.getCharacteristic('battery_level');
+    const value = await batteryLevel.readValue();
+    const level = value.getUint8(0);
+    updateBluetoothUI(`🔋 ${device.name}: ${level}%`);
+  } catch (e) {
+    console.warn("Bateria não disponível para", device.name);
+  }
+}
+
+function toggleBluetooth() {
+  if (!navigator.bluetooth) {
+    updateBluetoothUI("❌ Bluetooth não suportado");
+    return;
+  }
+  bluetoothEnabled = !bluetoothEnabled;
+  if (bluetoothEnabled) {
+    requestAndRememberDevice();
+  } else {
+    updateBluetoothUI("🔵 Bluetooth: Desativado");
+  }
+}
+
+window.addEventListener("load", () => {
+  listKnownDevices();
+  if (!navigator.bluetooth) updateBluetoothUI("❌ Bluetooth não suportado");
+});
+</script>
