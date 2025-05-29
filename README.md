@@ -3511,3 +3511,13 @@ mini-windows/
   </div>
 </body>
 </html>
+// system.js - Gerencia janelas do Mini Windows Xbox
+
+const appUrls = { youtube: "https://www.youtube.com", netflix: "https://www.netflix.com", photopea: "https://www.photopea.com", gmail: "https://mail.google.com" };
+
+function openApp(appName) { if (!appUrls[appName]) return alert("App não encontrado");
+
+const win = document.createElement("div"); win.className = "absolute top-16 left-16 w-3/4 h-3/4 bg-gray-800 border border-white shadow-lg rounded-xl overflow-hidden"; win.innerHTML = <div class="flex justify-between items-center bg-gray-700 text-sm px-4 py-2"> <span>${appName.toUpperCase()}</span> <button onclick="this.closest('div').parentElement.remove()">❌</button> </div> <iframe src="${appUrls[appName]}" class="w-full h-full border-none"></iframe>;
+
+document.getElementById("desktop").appendChild(win); }
+
