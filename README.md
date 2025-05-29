@@ -659,3 +659,23 @@ self.addEventListener("fetch", (event) => {
   <div class="window-header">BoxedWine</div>
   <iframe src="apps/boxedwine/index.html" style="width:100%; height:100%; border:0;"></iframe>
 </div>
+<div class="window" id="boxedwine">
+  <div class="window-header">BoxedWine</div>
+  <iframe src="apps/boxedwine/index.html" style="width:100%; height:100%; border:0;"></iframe>
+</div><div class="window" id="boxedwine">
+  <div class="window-header">BoxedWine</div>
+  <iframe src="apps/boxedwine/index.html" style="width:100%; height:100%; border:0;"></iframe>
+</div><div class="window" id="boxedwine">
+  <div class="window-header">BoxedWine</div>
+  <iframe src="apps/boxedwine/index.html" style="width:100%; height:100%; border:0;"></iframe>
+</div><div class="window" id="boxedwine">
+  <div class="window-header">BoxedWine</div>
+  <iframe src="apps/boxedwine/index.html" style="width:100%; height:100%; border:0;"></iframe>
+</div>MiniWindows/
+└── apps/
+    └── boxedwine/
+        ├── index.html
+        ├── boxedwine.js
+        ├── boxedwine.wasm
+        ├── wineData/
+        └── app.exe  ← (exemplo)
