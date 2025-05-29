@@ -1296,3 +1296,11 @@ function enableAdBlock() {
 // Ativa automaticamente
 window.addEventListener("DOMContentLoaded", enableAdBlock);
 <script src="../../system/adguard-lite.js" defer></script>
+/mini-windows/
+├── apps/
+│   └── emulador-windows/
+│       ├── index.html
+│       ├── boxedwine/
+│       │   ├── boxedwine.html
+│       │   ├── boxedwine.js
+│       │   └── ... (arquivos do BoxedWine)
