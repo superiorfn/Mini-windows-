@@ -1067,3 +1067,5 @@ self.addEventListener("fetch", (event) => {
   }
 }
 npm run tauri build
+npm install @capacitor/core @capacitor/cli
+npx cap init miniwindows com.exemplo.miniwindows
