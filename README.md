@@ -1194,3 +1194,65 @@ cwebp wallpaper.jpg -o wallpaper.webp
       │    └── calculator.webp
       └── logos/
            └── miniwin-logo.webp
+// Limita a frequência de atualizações intensas (como animações)
+function throttle(callback, delay) {
+  let last = 0;
+  return function(...args) {
+    const now = Date.now();
+    if (now - last >= delay) {
+      last = now;
+      callback(...args);
+    }
+  };
+}
+
+// Substitui setInterval com controle de carga
+function optimizedInterval(callback, delay) {
+  let id = null;
+  function run() {
+    callback();
+    id = setTimeout(run, delay);
+  }
+  run();
+  return () => clearTimeout(id);
+}
+
+// Substitui animações por transições CSS leves
+function disableHeavyAnimations() {
+  const style = document.createElement("style");
+  style.textContent = `
+    * {
+      animation: none !important;
+      transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// Pausa processamento de apps inativos
+function pauseInactiveApps() {
+  const apps = document.querySelectorAll(".app-window");
+  apps.forEach(app => {
+    if (!app.classList.contains("active")) {
+      const heavyContent = app.querySelectorAll("canvas, video, audio, iframe");
+      heavyContent.forEach(el => {
+        if (el.tagName === "VIDEO" || el.tagName === "AUDIO") el.pause();
+        if (el.tagName === "IFRAME") el.src = ""; // descarrega conteúdo
+        if (el.tagName === "CANVAS") el.remove(); // remove canvas pesados
+      });
+    }
+  });
+}
+
+// Monitora e aplica ajustes
+function applyCpuOptimizations() {
+  disableHeavyAnimations();
+  optimizedInterval(() => {
+    pauseInactiveApps();
+  }, 10000);
+}
+
+// Rodar ao carregar
+window.addEventListener("DOMContentLoaded", () => {
+  applyCpuOptimizations();
+});
