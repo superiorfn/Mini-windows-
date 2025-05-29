@@ -2527,3 +2527,130 @@ window.addEventListener("DOMContentLoaded", init);
   max-width: 100%;
   height: auto;
 }
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Navegador Ultra Leve</title>
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    body {
+      margin: 0;
+      background: #0a0a0a;
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #barra {
+      display: flex;
+      padding: 5px;
+      background: #111;
+      gap: 5px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 6px;
+      border: none;
+      border-radius: 6px;
+      background: #222;
+      color: white;
+    }
+
+    button {
+      background: #333;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+    }
+
+    #opcoes {
+      background: #181818;
+      padding: 5px;
+      display: flex;
+      gap: 10px;
+      font-size: 14px;
+      justify-content: center;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="barra">
+    <input type="text" id="url" placeholder="Digite a URL..." />
+    <button onclick="navegar()">Ir</button>
+  </div>
+
+  <div id="opcoes">
+    <label><input type="checkbox" id="modoSeguro" checked />Modo seguro</label>
+    <label><input type="checkbox" id="modoLeve" />Modo leve</label>
+    <label><input type="checkbox" id="noturnoAuto" checked />Auto Noturno</label>
+  </div>
+
+  <iframe id="visor"></iframe>
+
+  <script>
+    const urlInput = document.getElementById("url");
+    const visor = document.getElementById("visor");
+    const modoSeguro = document.getElementById("modoSeguro");
+    const modoLeve = document.getElementById("modoLeve");
+
+    function navegar() {
+      let url = urlInput.value.trim();
+      if (!url.startsWith("http")) url = "https://" + url;
+
+      const sandboxOptions = [
+        "allow-forms",
+        "allow-same-origin",
+        "allow-scripts"
+      ];
+
+      if (modoSeguro.checked) {
+        visor.setAttribute("sandbox", sandboxOptions.join(" "));
+      } else {
+        visor.removeAttribute("sandbox");
+      }
+
+      if (modoLeve.checked) {
+        // Usa um proxy que bloqueia imagens (usando DuckDuckGo Lite como exemplo leve)
+        if (url.includes("google.")) {
+          url = "https://lite.duckduckgo.com/lite";
+        }
+      }
+
+      visor.src = url;
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      urlInput.value = "kagi.com";
+      navegar();
+    });
+
+    // Modo noturno automático baseado no horário
+    const now = new Date().getHours();
+    if (document.getElementById("noturnoAuto").checked && (now < 6 || now >= 18)) {
+      document.body.style.background = "#000";
+    }
+  </script>
+</body>
+</html>
