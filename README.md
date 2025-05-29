@@ -514,3 +514,15 @@ body {
     <div class="window-body">
       <input type="file" accept="
 <button onclick="openWindow('antivirusWindow')">🛡️ Mini Antivírus</button>
+function escanearArquivo(event) {
+  const file = event.target.files[0];
+  const output = document.getElementById("antivirusOutput");
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function () {
+    const content = reader.result;
+    let alerts = [];
+
+    // Verificações básicas
+    if (/eval
