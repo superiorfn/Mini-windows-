@@ -648,3 +648,10 @@ self.addEventListener("fetch", (event) => {
 });
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0078D7">
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+      .then(() => console.log("✅ Service Worker registrado"))
+      .catch((err) => console.error("SW error:", err));
+  }
+</script>
