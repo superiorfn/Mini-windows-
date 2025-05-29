@@ -1,4 +1,63 @@
-MiniWindows/
+// Mini Windows Kernel
+document.addEventListener("DOMContentLoaded", () => {
+  const zIndexStart = 100;
+  let zCounter = zIndexStart;
+
+  // Permitir mover janelas
+  document.querySelectorAll('.window').forEach(win => {
+    const header = win.querySelector('.window-header');
+    let isDragging = false, offsetX, offsetY;
+
+    header.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      offsetX = e.clientX - win.offsetLeft;
+      offsetY = e.clientY - win.offsetTop;
+      bringToFront(win);
+    });
+
+    document.addEventListener('mouseup', () => isDragging = false);
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        win.style.left = (e.clientX - offsetX) + 'px';
+        win.style.top = (e.clientY - offsetY) + 'px';
+      }
+    });
+  });
+
+  // Traz janela para frente
+  function bringToFront(win) {
+    zCounter++;
+    win.style.zIndex = zCounter;
+  }
+
+  // Abrir e fechar
+  window.openWindow = (id) => {
+    const win = document.getElementById(id);
+    if (win) {
+      win.style.display = "flex";
+      bringToFront(win);
+    }
+  };
+
+  window.closeWindow = (id) => {
+    const win = document.getElementById(id);
+    if (win) win.style.display = "none";
+  };
+
+  // Salvar configs básicas
+  loadWallpaper();
+
+  function loadWallpaper() {
+    const bg = localStorage.getItem("mini_bg");
+    if (bg) document.body.style.backgroundImage = `url('${bg}')`;
+  }
+
+  // Expor função global para mudar wallpaper
+  window.setWallpaper = (url) => {
+    document.body.style.backgroundImage = `url('${url}')`;
+    localStorage.setItem("mini_bg", url);
+  };
+});MiniWindows/
 ├── index.html
 ├── script.js          ← núcleo do sistema (te entrego abaixo)
 ├── style.css
