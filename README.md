@@ -513,3 +513,4 @@ body {
     </div>
     <div class="window-body">
       <input type="file" accept="
+<button onclick="openWindow('antivirusWindow')">🛡️ Mini Antivírus</button>
