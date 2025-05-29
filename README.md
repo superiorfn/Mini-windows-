@@ -1073,3 +1073,35 @@ npx cap add android
 npx cap copy
 npx cap open android
 npm create tauri-app
+mkdir miniwindows-exe
+cd miniwindows-exe
+npm create tauri-app 
+mkdir miniwindows-exe
+cd miniwindows-exe
+npm create tauri-app{
+  "build": {
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "devPath": "../MiniWindows",
+    "distDir": "../MiniWindows"
+  },
+  "package": {
+    "productName": "Mini Windows",
+    "version": "1.0.0"
+  },
+  "tauri": {
+    "windows": [
+      {
+        "title": "Mini Windows",
+        "width": 1280,
+        "height": 800,
+        "resizable": true
+      }
+    ],
+    "bundle": {
+      "identifier": "com.miniwindows.app",
+      "icon": ["icons/icon.ico"],
+      "targets": ["msi", "nsis"]
+    }
+  }
+}
