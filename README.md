@@ -1663,3 +1663,405 @@ setInterval(() => {
 .app-window.focused {
   outline: 3px solid #00f;
 }
+// mouse-virtual.js
+
+let cursor = null;
+let cursorX = window.innerWidth / 2;
+let cursorY = window.innerHeight / 2;
+let gamepadIndex = null;
+let lastClick = 0;
+
+// Criar ponteiro visual
+function createVirtualCursor() {
+  cursor = document.createElement("div");
+  cursor.id = "virtual-cursor";
+  cursor.style.position = "fixed";
+  cursor.style.width = "16px";
+  cursor.style.height = "16px";
+  cursor.style.borderRadius = "50%";
+  cursor.style.background = "white";
+  cursor.style.border = "2px solid blue";
+  cursor.style.zIndex = 9999;
+  cursor.style.pointerEvents = "none";
+  cursor.style.left = cursorX + "px";
+  cursor.style.top = cursorY + "px";
+  document.body.appendChild(cursor);
+}
+
+function moveCursor(dx, dy) {
+  const speed = 8; // Ajustável
+  cursorX = Math.min(window.innerWidth, Math.max(0, cursorX + dx * speed));
+  cursorY = Math.min(window.innerHeight, Math.max(0, cursorY + dy * speed));
+  cursor.style.left = cursorX + "px";
+  cursor.style.top = cursorY + "px";
+}
+
+function simulateClick() {
+  const now = Date.now();
+  if (now - lastClick < 300) return;
+  lastClick = now;
+
+  const el = document.elementFromPoint(cursorX, cursorY);
+  if (el) {
+    const evt = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+      clientX: cursorX,
+      clientY: cursorY,
+    });
+    el.dispatchEvent(evt);
+    el.focus?.();
+  }
+}
+
+function updateGamepadMouse() {
+  const gp = navigator.getGamepads()[gamepadIndex];
+  if (!gp) return;
+
+  const [A, B] = gp.buttons;
+  const rightX = gp.axes[2];
+  const rightY = gp.axes[3];
+
+  if (Math.abs(rightX) > 0.1 || Math.abs(rightY) > 0.1) {
+    moveCursor(rightX, rightY);
+  }
+
+  if (A.pressed) {
+    simulateClick();
+  }
+}
+
+function detectGamepad() {
+  const gps = navigator.getGamepads();
+  for (let i = 0; i < gps.length; i++) {
+    if (gps[i]) {
+      gamepadIndex = i;
+      break;
+    }
+  }
+}
+
+window.addEventListener("gamepadconnected", () => {
+  console.log("🎮 Controle detectado para mouse virtual.");
+  detectGamepad();
+  if (!cursor) createVirtualCursor();
+});
+
+setInterval(() => {
+  if (gamepadIndex !== null) {
+    updateGamepadMouse();
+  }
+}, 20);<script src="system/mouse-virtual.js" defer></script>#virtual-cursor {
+  background: url("assets/icons/cursor.png");
+  background-size: cover;
+  width: 24px;
+  height: 24px;
+  border: none;
+}/mini-windows/
+└── system/
+    ├── virtual-keyboard.js
+    └── virtual-keyboard.css// virtual-keyboard.js
+
+const keysLayout = [
+  ["Q","W","E","R","T","Y","U","I","O","P"],
+  ["A","S","D","F","G","H","J","K","L"],
+  ["Z","X","C","V","B","N","M"],
+  ["Space","Backspace","Enter"]
+];
+
+let focusedKey = { row: 0, col: 0 };
+
+function createKeyboard() {
+  const keyboard = document.createElement("div");
+  keyboard.id = "virtual-keyboard";
+  
+  keysLayout.forEach((row, rowIndex) => {
+    const rowDiv = document.createElement("div");
+    rowDiv.className = "vk-row";
+    row.forEach((key, colIndex) => {
+      const keyBtn = document.createElement("button");
+      keyBtn.className = "vk-key";
+      keyBtn.dataset.row = rowIndex;
+      keyBtn.dataset.col = colIndex;
+      keyBtn.textContent = key;
+      keyBtn.addEventListener("click", () => pressKey(key));
+      rowDiv.appendChild(keyBtn);
+    });
+    keyboard.appendChild(rowDiv);
+  });
+
+  document.body.appendChild(keyboard);
+  highlightFocusedKey();
+}
+
+function pressKey(key) {
+  const active = document.activeElement;
+  const value = key === "Space" ? " " :
+                key === "Backspace" ? "BACKSPACE" :
+                key === "Enter" ? "\n" : key;
+
+  if (value === "BACKSPACE") {
+    if (active.value) {
+      active.value = active.value.slice(0, -1);
+    }
+  } else {
+    if (active && active.tagName === "TEXTAREA" || active.tagName === "INPUT") {
+      active.value += value;
+    }
+  }
+}
+
+function highlightFocusedKey() {
+  document.querySelectorAll(".vk-key").forEach(k => k.classList.remove("vk-focused"));
+  const key = document.querySelector(`.vk-key[data-row="${focusedKey.row}"][data-col="${focusedKey.col}"]`);
+  if (key) key.classList.add("vk-focused");
+}
+
+function handleVirtualKeyboardNav(e) {
+  const row = keysLayout[focusedKey.row];
+
+  if (e.key === "ArrowRight") focusedKey.col = (focusedKey.col + 1) % row.length;
+  if (e.key === "ArrowLeft") focusedKey.col = (focusedKey.col - 1 + row.length) % row.length;
+  if (e.key === "ArrowDown") focusedKey.row = (focusedKey.row + 1) % keysLayout.length;
+  if (e.key === "ArrowUp") focusedKey.row = (focusedKey.row - 1 + keysLayout.length) % keysLayout.length;
+  if (e.key === "Enter" || e.key === " ") {
+    const key = keysLayout[focusedKey.row][focusedKey.col];
+    pressKey(key);
+  }
+
+  highlightFocusedKey();
+}
+
+window.addEventListener("keydown", handleVirtualKeyboardNav);
+
+// Iniciar teclado ao carregar
+create#virtual-keyboard {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #222;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  z-index: 9998;
+}
+
+.vk-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.vk-key {
+  margin: 4px;
+  padding: 12px 16px;
+  font-size: 16px;
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.vk-key.vk-focused {
+  outline: 3px solid #00f;
+  background: #666;
+}<link rel="stylesheet" href="system/virtual-keyboard.css">
+<script src="system/virtual-keyboard.js" defer></script>// virtual-keyboard.js
+
+const baseLayout = [
+  ["Q","W","E","R","T","Y","U","I","O","P"],
+  ["A","S","D","F","G","H","J","K","L"],
+  ["Z","X","C","V","B","N","M"],
+  ["Shift", "CapsLock", "Space", "Backspace", "Enter"]
+];
+
+let isShift = false;
+let isCaps = false;
+let focusedKey = { row: 0, col: 0 };
+
+function getDisplayKey(key) {
+  if (key === "Space") return "␣";
+  if (["Shift", "CapsLock", "Backspace", "Enter"].includes(key)) return key;
+
+  const upper = key.toUpperCase();
+  return (isCaps ^ isShift) ? upper : upper.toLowerCase();
+}
+
+function createKeyboard() {
+  const keyboard = document.createElement("div");
+  keyboard.id = "virtual-keyboard";
+
+  baseLayout.forEach((row, rowIndex) => {
+    const rowDiv = document.createElement("div");
+    rowDiv.className = "vk-row";
+    row.forEach((key, colIndex) => {
+      const keyBtn = document.createElement("button");
+      keyBtn.className = "vk-key";
+      keyBtn.dataset.row = rowIndex;
+      keyBtn.dataset.col = colIndex;
+      keyBtn.dataset.key = key;
+      keyBtn.textContent = getDisplayKey(key);
+      keyBtn.addEventListener("click", () => pressKey(key));
+      rowDiv.appendChild(keyBtn);
+    });
+    keyboard.appendChild(rowDiv);
+  });
+
+  document.body.appendChild(keyboard);
+  highlightFocusedKey();
+}
+
+function pressKey(key) {
+  const active = document.activeElement;
+
+  if (key === "Shift") {
+    isShift = !isShift;
+    updateKeyboard();
+    return;
+  }
+
+  if (key === "CapsLock") {
+    isCaps = !isCaps;
+    updateKeyboard();
+    return;
+  }
+
+  const value = {
+    "Space": " ",
+    "Backspace": "BACKSPACE",
+    "Enter": "\n"
+  }[key] ?? getDisplayKey(key);
+
+  if (value === "BACKSPACE") {
+    if (active.value) {
+      active.value = active.value.slice(0, -1);
+    }
+  } else {
+    if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA")) {
+      active.value += value;
+    }
+  }
+
+  if (isShift && key !== "Shift") {
+    isShift = false;
+    updateKeyboard();
+  }
+}
+
+function updateKeyboard() {
+  document.querySelectorAll(".vk-key").forEach(btn => {
+    const key = btn.dataset.key;
+    btn.textContent = getDisplayKey(key);
+  });
+}
+
+function highlightFocusedKey() {
+  document.querySelectorAll(".vk-key").forEach(k => k.classList.remove("vk-focused"));
+  const key = document.querySelector(`.vk-key[data-row="${focusedKey.row}"][data-col="${focusedKey.col}"]`);
+  if (key) key.classList.add("vk-focused");
+}
+
+function handleVirtualKeyboardNav(e) {
+  const row = baseLayout[focusedKey.row];
+
+  if (e.key === "ArrowRight") focusedKey.col = (focusedKey.col + 1) % row.length;
+  if (e.key === "ArrowLeft") focusedKey.col = (focusedKey.col - 1 + row.length) % row.length;
+  if (e.key === "ArrowDown") focusedKey.row = (focusedKey.row + 1) % baseLayout.length;
+  if (e.key === "ArrowUp") focusedKey.row = (focusedKey.row - 1 + baseLayout.length) % baseLayout.length;
+  if (e.key === "Enter" || e.key === " ") {
+    const key = baseLayout[focusedKey.row][focusedKey.col];
+    pressKey(key);
+  }
+
+  highlightFocusedKey();
+}
+
+window.addEventListener("keydown", handleVirtualKeyboardNav);
+window.addEventListener("DOMContentLoaded", createKeyboard);.vk-key[data-key="Shift"].vk-focused,
+.vk-key[data-key="CapsLock"].vk-focused {
+  background: #0af;
+}
+
+.vk-key[data-key="Shift"].active,
+.vk-key[data-key="CapsLock"].active {
+  background: #00f;
+}#virtual-keyboard {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1c1c1c;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 9999;
+  max-height: 45vh;
+  overflow-y: auto;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.vk-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.vk-key {
+  flex: 1 0 auto;
+  min-width: 10%;
+  max-width: 16%;
+  padding: 12px;
+  font-size: 1.2rem;
+  text-align: center;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  user-select: none;
+  transition: 0.2s ease;
+}
+
+.vk-key:hover,
+.vk-key:focus,
+.vk-key.vk-focused {
+  background: #444;
+  outline: 2px solid #0af;
+}
+
+@media (max-width: 768px) {
+  .vk-key {
+    min-width: 16%;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .vk-key {
+    min-width: 22%;
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  #virtual-keyboard {
+    max-height: 50vh;
+    padding: 6px;
+  }
+}const baseLayout = [
+  ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"],
+  ["Q","W","E","R","T","Y","U","I","O","P"],
+  ["A","S","D","F","G","H","J","K","L"],
+  ["Z","X","C","V","B","N","M"],
+  ["Shift", "CapsLock", "Space", "Backspace", "Enter"]
+];if (/^F\d+$/.test(key)) {
+    const event = new KeyboardEvent("keydown", { key });
+    document.dispatchEvent(event);
+    return;
+  }.vk-key[data-key^="F"] {
+  min-width: 7%;
+  max-width: 8%;
+  font-size: 0.9rem;
+}
