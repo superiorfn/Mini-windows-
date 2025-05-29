@@ -1327,3 +1327,17 @@ window.addEventListener("DOMContentLoaded", enableAdBlock);
   <iframe src="boxedwine/boxedwine.html"></iframe>
 </body>
 </html>
+OS.registerApp("emulador-windows", {
+  name: "Emulador Windows",
+  icon: "assets/icons/windows-emulador.webp",
+  open: () => {
+    const win = document.createElement("div");
+    win.className = "app-window";
+    win.innerHTML = `
+      <div class="titlebar">Emulador Windows</div>
+      <iframe src="apps/emulador-windows/index.html" width="800" height="600"></iframe>
+    `;
+    document.body.appendChild(win);
+    return win;
+  }
+});
