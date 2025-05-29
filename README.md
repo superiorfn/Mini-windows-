@@ -5356,3 +5356,25 @@ document.addEventListener("keydown", e => {
 
     loadUser();
 </script>
+<!-- Gaming Hub com integração Xbox, Game Pass, Discord, Steam e Epic Games --><!-- Painel Gaming Hub --><div id="gamingHub" class="hidden fixed top-12 left-12 w-[80vw] h-[80vh] bg-black text-white p-4 rounded-2xl shadow-2xl z-50 overflow-hidden">
+  <h2 class="text-2xl font-bold mb-4">🎮 Gaming Hub</h2>
+  <div class="grid grid-cols-2 gap-4 h-full">
+    <iframe src="https://www.xbox.com/play" class="w-full h-full rounded-xl border border-green-600"></iframe>
+    <iframe src="https://discord.com/app" class="w-full h-full rounded-xl border border-blue-600"></iframe>
+    <iframe src="https://store.steampowered.com" class="w-full h-full rounded-xl border border-gray-500"></iframe>
+    <iframe src="https://store.epicgames.com" class="w-full h-full rounded-xl border border-purple-600"></iframe>
+  </div>
+  <button onclick="closeGamingHub()" class="absolute top-2 right-4 bg-gray-800 hover:bg-gray-700 p-2 rounded">✖ Fechar</button>
+</div><script>
+function openGamingHub() {
+  document.getElementById("gamingHub").classList.remove("hidden");
+}
+
+function closeGamingHub() {
+  document.getElementById("gamingHub").classList.add("hidden");
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "g") openGamingHub();
+});
+</script>
