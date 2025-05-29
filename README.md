@@ -6475,3 +6475,101 @@ window.addEventListener("load", () => {
   if (!navigator.bluetooth) updateBluetoothUI("❌ Bluetooth não suportado");
 });
 </script>
+<!-- Mini Windows com Bluetooth Avançado Finalizado --><!-- Status Bluetooth --><div id="bluetoothStatus" class="fixed top-4 right-4 bg-blue-800 text-white px-4 py-1 rounded shadow text-sm">🔵 Bluetooth: Desconectado</div>
+<button onclick="toggleBluetooth()" class="fixed top-16 right-4 bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded shadow">🔁 Alternar Bluetooth</button><!-- Lista de dispositivos emparelhados --><div id="pairedDevices" class="fixed top-28 right-4 bg-blue-900 text-white p-2 rounded shadow w-72 max-h-60 overflow-y-auto hidden">
+  <h4 class="font-bold mb-2">🔗 Dispositivos Emparelhados:</h4>
+  <ul id="devicesList" class="space-y-1 text-sm"></ul>
+</div><script>
+let bluetoothEnabled = false;
+let knownDevices = JSON.parse(localStorage.getItem("knownBluetoothDevices")) || [];
+let lastConnectedId = localStorage.getItem("lastConnectedBluetoothId") || null;
+
+function updateBluetoothUI(status) {
+  document.getElementById("bluetoothStatus").innerText = status;
+}
+
+async function requestAndRememberDevice() {
+  try {
+    const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['battery_service'] });
+    if (!knownDevices.find(d => d.id === device.id)) {
+      knownDevices.push({ id: device.id, name: device.name });
+      localStorage.setItem("knownBluetoothDevices", JSON.stringify(knownDevices));
+    }
+    localStorage.setItem("lastConnectedBluetoothId", device.id);
+    updateBluetoothUI(`🔵 Conectado a ${device.name}`);
+    listKnownDevices();
+    readBatteryLevel(device);
+  } catch {
+    updateBluetoothUI("🔵 Bluetooth: Desconectado");
+  }
+}
+
+function listKnownDevices() {
+  const listEl = document.getElementById("devicesList");
+  const container = document.getElementById("pairedDevices");
+  listEl.innerHTML = "";
+  if (knownDevices.length > 0) {
+    container.classList.remove("hidden");
+    knownDevices.forEach(d => {
+      const li = document.createElement("li");
+      li.innerHTML = `📱 <button onclick="connectToDeviceById('${d.id}', '${d.name}')" class="underline hover:text-lime-300">${d.name}</button>`;
+      listEl.appendChild(li);
+    });
+  } else {
+    container.classList.add("hidden");
+  }
+}
+
+async function connectToDeviceById(deviceId, name) {
+  try {
+    const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['battery_service'] });
+    if (device.id === deviceId) {
+      updateBluetoothUI(`🔵 Reconectado a ${name}`);
+      localStorage.setItem("lastConnectedBluetoothId", device.id);
+      readBatteryLevel(device);
+    }
+  } catch (err) {
+    console.warn("Erro ao reconectar:", err);
+  }
+}
+
+async function autoReconnectLastDevice() {
+  if (!lastConnectedId) return;
+  const match = knownDevices.find(d => d.id === lastConnectedId);
+  if (match) {
+    connectToDeviceById(match.id, match.name);
+  }
+}
+
+async function readBatteryLevel(device) {
+  try {
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService('battery_service');
+    const batteryLevel = await service.getCharacteristic('battery_level');
+    const value = await batteryLevel.readValue();
+    const level = value.getUint8(0);
+    updateBluetoothUI(`🔋 ${device.name}: ${level}%`);
+  } catch (e) {
+    console.warn("Bateria não disponível para", device.name);
+  }
+}
+
+function toggleBluetooth() {
+  if (!navigator.bluetooth) {
+    updateBluetoothUI("❌ Bluetooth não suportado");
+    return;
+  }
+  bluetoothEnabled = !bluetoothEnabled;
+  if (bluetoothEnabled) {
+    requestAndRememberDevice();
+  } else {
+    updateBluetoothUI("🔵 Bluetooth: Desativado");
+  }
+}
+
+window.addEventListener("load", () => {
+  listKnownDevices();
+  if (!navigator.bluetooth) updateBluetoothUI("❌ Bluetooth não suportado");
+  if (navigator.bluetooth && lastConnectedId) autoReconnectLastDevice();
+});
+</script>
