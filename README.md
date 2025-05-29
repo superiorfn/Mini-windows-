@@ -646,3 +646,5 @@ self.addEventListener("fetch", (event) => {
       .then((response) => response || fetch(event.request))
   );
 });
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0078D7">
