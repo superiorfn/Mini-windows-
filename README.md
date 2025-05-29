@@ -1181,3 +1181,8 @@ setInterval(() => {
   optimizeTimers();
 }, 30000);
 <script src="scripts/memory-optimizer.js" defer></script>
+sudo apt install webp    # Linux
+brew install webp        # macOS
+
+# Exemplo de conversão
+cwebp wallpaper.jpg -o wallpaper.webp
