@@ -1256,3 +1256,4 @@ function applyCpuOptimizations() {
 window.addEventListener("DOMContentLoaded", () => {
   applyCpuOptimizations();
 });
+<script src="scripts/cpu-optimizer.js" defer></script>
