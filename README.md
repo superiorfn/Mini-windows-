@@ -594,3 +594,4 @@ function escanearArquivo(event) {
 
     // Verificações básicas
     if (/eval
+<script src="script.js"></script>
