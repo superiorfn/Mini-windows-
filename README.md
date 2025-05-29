@@ -1567,3 +1567,93 @@ function initializeInputHandler() {
 
 initializeInputHandler();
 <script src="system/input-handler.js" defer></script>
+// gamepad-handler.js
+
+let gamepadIndex = null;
+let lastPress = 0;
+let focusIndex = 0;
+
+function pollGamepad() {
+  const gamepads = navigator.getGamepads();
+  const gp = gamepads[gamepadIndex];
+  if (!gp) return;
+
+  const now = Date.now();
+
+  // Evita múltiplos acionamentos por segundo
+  const debounce = (ms) => (now - lastPress > ms);
+
+  // Botões comuns:
+  const [A, B, X, Y, LB, RB, LT, RT, Select, Start] = gp.buttons;
+
+  if (Start.pressed && debounce(500)) {
+    document.getElementById("menu-iniciar")?.classList.toggle("open");
+    lastPress = now;
+  }
+
+  if (B.pressed && debounce(500)) {
+    const active = document.querySelector(".app-window:last-of-type");
+    if (active) active.remove();
+    lastPress = now;
+  }
+
+  // D-pad navegação
+  if (gp.axes[1] === -1 && debounce(300)) {
+    focusIndex = Math.max(0, focusIndex - 1);
+    focusWindow(focusIndex);
+    lastPress = now;
+  }
+
+  if (gp.axes[1] === 1 && debounce(300)) {
+    focusIndex = Math.min(document.querySelectorAll(".app-window").length - 1, focusIndex + 1);
+    focusWindow(focusIndex);
+    lastPress = now;
+  }
+
+  // LT/RT alternam janelas
+  if (LT.pressed && debounce(300)) {
+    focusIndex = (focusIndex - 1 + getAppCount()) % getAppCount();
+    focusWindow(focusIndex);
+    lastPress = now;
+  }
+
+  if (RT.pressed && debounce(300)) {
+    focusIndex = (focusIndex + 1) % getAppCount();
+    focusWindow(focusIndex);
+    lastPress = now;
+  }
+}
+
+function focusWindow(index) {
+  const windows = document.querySelectorAll(".app-window");
+  windows.forEach((win, i) => {
+    win.style.zIndex = i === index ? 100 : 1;
+    win.classList.toggle("focused", i === index);
+  });
+}
+
+function getAppCount() {
+  return document.querySelectorAll(".app-window").length;
+}
+
+function checkGamepadConnection() {
+  const gamepads = navigator.getGamepads();
+  for (let i = 0; i < gamepads.length; i++) {
+    if (gamepads[i]) {
+      gamepadIndex = i;
+      console.log("🎮 Controle conectado!");
+      return;
+    }
+  }
+}
+
+// Inicializador
+window.addEventListener("gamepadconnected", (e) => {
+  console.log("Gamepad conectado:", e.gamepad);
+  gamepadIndex = e.gamepad.index;
+});
+
+setInterval(() => {
+  if (gamepadIndex === null) checkGamepadConnection();
+  else pollGamepad();
+}, 100);
