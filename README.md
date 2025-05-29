@@ -2065,3 +2065,186 @@ window.addEventListener("DOMContentLoaded", createKeyboard);.vk-key[data-key="Sh
   max-width: 8%;
   font-size: 0.9rem;
 }
+const baseLayout = [
+  ["Esc", "Tab", "CapsLock", "Shift", "Ctrl", "Alt", "Del", "Enter", "Backspace"],
+  ["F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"],
+  ["Q","W","E","R","T","Y","U","I","O","P"],
+  ["A","S","D","F","G","H","J","K","L"],
+  ["Z","X","C","V","B","N","M"],
+  ["Space", "Emoji", "Voice"]
+];
+
+let isShift = false;
+let isCaps = false;
+
+function getDisplayKey(key) {
+  if (key === "Space") return "␣";
+  if (key === "Emoji") return "😄";
+  if (key === "Voice") return "🎙️";
+  if (["Shift", "CapsLock", "Backspace", "Enter", "Tab", "Ctrl", "Alt", "Esc", "Del"].includes(key)) return key;
+  const upper = key.toUpperCase();
+  return (isCaps ^ isShift) ? upper : upper.toLowerCase();
+}
+
+function createKeyboard() {
+  const keyboard = document.createElement("div");
+  keyboard.id = "virtual-keyboard";
+
+  baseLayout.forEach(row => {
+    const rowDiv = document.createElement("div");
+    rowDiv.className = "vk-row";
+    row.forEach(key => {
+      const keyBtn = document.createElement("button");
+      keyBtn.className = "vk-key";
+      keyBtn.dataset.key = key;
+      keyBtn.textContent = getDisplayKey(key);
+      keyBtn.addEventListener("click", () => pressKey(key));
+      rowDiv.appendChild(keyBtn);
+    });
+    keyboard.appendChild(rowDiv);
+  });
+
+  document.body.appendChild(keyboard);
+}
+
+function pressKey(key) {
+  const active = document.activeElement;
+
+  if (key === "Shift") {
+    isShift = !isShift;
+    updateKeyboard();
+    return;
+  }
+
+  if (key === "CapsLock") {
+    isCaps = !isCaps;
+    updateKeyboard();
+    return;
+  }
+
+  if (key === "Emoji") {
+    insertText("😄");
+    return;
+  }
+
+  if (key === "Voice") {
+    startDictation();
+    return;
+  }
+
+  if (key === "Ctrl+Alt+Del") {
+    insertText("[CTRL+ALT+DEL]");
+    return;
+  }
+
+  if (/^F\d+$/.test(key)) {
+    document.dispatchEvent(new KeyboardEvent("keydown", { key }));
+    return;
+  }
+
+  if (key === "Space") insertText(" ");
+  else if (key === "Enter") insertText("\n");
+  else if (key === "Backspace") {
+    if (active && active.value) active.value = active.value.slice(0, -1);
+  }
+  else insertText(getDisplayKey(key));
+
+  if (isShift && key !== "Shift") {
+    isShift = false;
+    updateKeyboard();
+  }
+}
+
+function insertText(text) {
+  const active = document.activeElement;
+  if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA")) {
+    active.value += text;
+  }
+}
+
+function updateKeyboard() {
+  document.querySelectorAll(".vk-key").forEach(btn => {
+    const key = btn.dataset.key;
+    btn.textContent = getDisplayKey(key);
+  });
+}
+
+// 🗣️ Ditado por voz
+function startDictation() {
+  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+    alert("Ditado por voz não suportado neste navegador.");
+    return;
+  }
+
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = "pt-BR";
+  recognition.start();
+
+  recognition.onresult = (event) => {
+    const text = event.results[0][0].transcript;
+    insertText(text + " ");
+  };
+
+  recognition.onerror = () => alert("Erro no reconhecimento de voz.");
+}
+
+window.addEventListener("DOMContentLoaded", createKeyboard);#virtual-keyboard {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #1c1c1c;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 9999;
+  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.vk-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.vk-key {
+  flex: 1 0 auto;
+  min-width: 9%;
+  max-width: 12%;
+  padding: 12px;
+  font-size: 1.1rem;
+  text-align: center;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  user-select: none;
+  transition: 0.2s;
+}
+
+.vk-key:hover,
+.vk-key:focus {
+  background: #555;
+  outline: 2px solid #0af;
+}
+
+@media (max-width: 768px) {
+  .vk-key {
+    min-width: 16%;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .vk-key {
+    min-width: 22%;
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  #virtual-keyboard {
+    max-height: 45vh;
+    overflow-y: auto;
+  }
+}
