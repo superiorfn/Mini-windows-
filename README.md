@@ -2654,3 +2654,48 @@ window.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
 </html>
+/mini-windows
+├── index.html
+├── apps/
+│   ├── notas.js
+│   ├── agenda.js
+│   ├── calc.js
+│   ├── arquivos.js
+│   ├── pdf.jsfunction launchApp(app) {
+  import(`./apps/${app}.js`).then(m => {
+    if (typeof m.initApp === "function") m.initApp();
+  });
+}export function initApp() {
+  const win = document.createElement("div");
+  win.innerHTML = `
+    <div style="padding: 5px; background: #222; color: white;">
+      <strong>📝 Bloco de Notas</strong>
+      <textarea id="editor" style="width:100%;height:calc(100vh - 60px);background:#111;color:white;padding:10px;border:none;resize:none;"></textarea>
+    </div>
+  `;
+  document.body.appendChild(win);
+}export function initApp() {
+  const win = document.createElement("div");
+  win.innerHTML = `
+    <div style="padding: 10px; background: #111; color: white;">
+      <h3>📅 Agenda</h3>
+      <input type="date" id="data">
+      <textarea id="anot" placeholder="Anotações..." style="width:100%;height:100px;margin-top:10px;background:#222;color:white;border:none;"></textarea>
+      <button onclick="salvarNota()">Salvar</button>
+    </div>
+  `;
+  document.body.appendChild(win);
+
+  window.salvarNota = () => {
+    const dia = document.getElementById("data").value;
+    const nota = document.getElementById("anot").value;
+    localStorage.setItem(`agenda-${dia}`, nota);
+    alert("Salvo!");
+  };
+}<button onclick="launchApp('notas')">📝 Bloco de Notas</button>
+<button onclick="launchApp('agenda')">📅 Agenda</button>
+<button onclick="launchApp('calc')">🧮 Calculadora</button>
+<button onclick="launchApp('arquivos')">📁 Arquivos</button>
+<button onclick="launchApp('pdf')">📑 PDF</button>
+<button onclick="launchApp('anota')">🧠 Sticky Notes</button>
+│   └── anota.js
