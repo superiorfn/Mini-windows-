@@ -2699,3 +2699,65 @@ window.addEventListener("DOMContentLoaded", init);
 <button onclick="launchApp('pdf')">📑 PDF</button>
 <button onclick="launchApp('anota')">🧠 Sticky Notes</button>
 │   └── anota.js
+export function initApp() {
+  const win = document.createElement("div");
+  win.style = "width: 100%; height: 100%; background: #fff; color: #000; font-family: sans-serif; overflow: auto;";
+  win.innerHTML = `
+    <div style="background:#d93025;color:white;padding:10px;font-size:18px;">
+      <strong>📧 Mini Gmail</strong>
+      <button style="float:right;" onclick="document.body.removeChild(this.parentElement.parentElement)">X</button>
+    </div>
+    <div style="display:flex; height: calc(100% - 40px);">
+      <div style="width:200px;background:#f1f3f4;padding:10px;">
+        <button onclick="mostrarCaixa('entrada')">📥 Caixa de Entrada</button><br><br>
+        <button onclick="mostrarCaixa('enviados')">📤 Enviados</button><br><br>
+        <button onclick="comporEmail()">✉️ Compor</button>
+      </div>
+      <div id="conteudo" style="flex:1;padding:10px;overflow-y:auto;"></div>
+    </div>
+  `;
+  document.body.appendChild(win);
+
+  // Funções de simulação
+  window.emails = {
+    entrada: [
+      { assunto: "Bem-vindo!", corpo: "Obrigado por usar o Mini Gmail!" },
+      { assunto: "Oferta", corpo: "Descontos exclusivos para você!" }
+    ],
+    enviados: []
+  };
+
+  window.mostrarCaixa = (tipo) => {
+    const div = document.getElementById("conteudo");
+    div.innerHTML = `<h2>${tipo === 'entrada' ? 'Caixa de Entrada' : 'Enviados'}</h2>`;
+    emails[tipo].forEach((email, i) => {
+      div.innerHTML += `
+        <div style="border-bottom:1px solid #ccc;padding:5px;">
+          <strong>${email.assunto}</strong><br>
+          <p>${email.corpo}</p>
+        </div>
+      `;
+    });
+  };
+
+  window.comporEmail = () => {
+    const div = document.getElementById("conteudo");
+    div.innerHTML = `
+      <h2>Nova Mensagem</h2>
+      <input id="destino" placeholder="Para..." style="width:100%;padding:5px;"><br><br>
+      <input id="assunto" placeholder="Assunto" style="width:100%;padding:5px;"><br><br>
+      <textarea id="corpo" style="width:100%;height:150px;padding:5px;"></textarea><br><br>
+      <button onclick="enviarEmail()">Enviar</button>
+    `;
+  };
+
+  window.enviarEmail = () => {
+    const assunto = document.getElementById("assunto").value;
+    const corpo = document.getElementById("corpo").value;
+    emails.enviados.push({ assunto, corpo });
+    alert("Mensagem enviada (simulada)!");
+    mostrarCaixa("enviados");
+  };
+
+  mostrarCaixa("entrada");
+}<button onclick="launchApp('gmail')">📧 Mini Gmail</button>
