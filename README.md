@@ -1,4 +1,13 @@
-<!-- Mini Antivírus -->
+MiniWindows/
+├── index.html
+├── script.js          ← núcleo do sistema (te entrego abaixo)
+├── style.css
+├── apps/
+│   ├── pintura.js
+│   ├── vscode.js
+│   ├── antivirus.js
+│   └── ...
+└── manifest.json      ← para tornar instalável<!-- Mini Antivírus -->
 <div id="antivirusWindow" class="window">
   <div class="window-header">
     🛡️ Mini Antivírus
