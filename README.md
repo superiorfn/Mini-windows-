@@ -3456,3 +3456,24 @@ img {
   height: auto;
   image-rendering: pixelated;
 }
+mini-windows/
+├── index.html
+├── js/
+├── css/
+├── apps/
+└── icons/
+{
+  "name": "Mini Windows",
+  "short_name": "MiniWin",
+  "start_url": "index.html",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#000000",
+  "theme_color": "#111111"
+}
