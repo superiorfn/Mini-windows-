@@ -3520,4 +3520,76 @@ function openApp(appName) { if (!appUrls[appName]) return alert("App não encont
 const win = document.createElement("div"); win.className = "absolute top-16 left-16 w-3/4 h-3/4 bg-gray-800 border border-white shadow-lg rounded-xl overflow-hidden"; win.innerHTML = <div class="flex justify-between items-center bg-gray-700 text-sm px-4 py-2"> <span>${appName.toUpperCase()}</span> <button onclick="this.closest('div').parentElement.remove()">❌</button> </div> <iframe src="${appUrls[appName]}" class="w-full h-full border-none"></iframe>;
 
 document.getElementById("desktop").appendChild(win); }
-
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Xbox OS</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <script defer src="system.js"></script>
+  <link rel="icon" type="image/png" href="assets/icons/xbox.png">
+  <style>
+    body {
+      background-image: url('assets/wallpapers/xbox-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+    .menu-btn {
+      background-color: #107c10;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .menu-btn:hover {
+      transform: scale(1.1);
+      background-color: #159c15;
+    }
+    #startMenu {
+      position: absolute;
+      bottom: 70px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      display: none;
+      min-width: 200px;
+    }
+    #startMenu.active {
+      display: block;
+    }
+  </style>
+</head>
+<body class="text-white font-sans">
+  <div id="desktop" class="relative w-screen h-screen overflow-hidden">
+    <!-- Menu Iniciar -->
+    <div class="absolute bottom-4 left-4">
+      <div class="menu-btn" onclick="toggleStartMenu()">X</div>
+    </div>
+    <div id="startMenu">
+      <div class="text-lg font-semibold mb-2">Menu Iniciar</div>
+      <ul class="space-y-1">
+        <li><button onclick="openApp('youtube')">📺 YouTube</button></li>
+        <li><button onclick="openApp('netflix')">🎬 Netflix</button></li>
+        <li><button onclick="openApp('photopea')">🖌️ Photopea</button></li>
+        <li><button onclick="openApp('gmail')">✉️ Gmail</button></li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    function toggleStartMenu() {
+      const menu = document.getElementById("startMenu");
+      menu.classList.toggle("active");
+    }
+  </script>
+</body>
+</html>
