@@ -1180,3 +1180,4 @@ setInterval(() => {
   cleanEventListeners();
   optimizeTimers();
 }, 30000);
+<script src="scripts/memory-optimizer.js" defer></script>
