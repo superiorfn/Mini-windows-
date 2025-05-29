@@ -1,4 +1,9 @@
-{
+<link rel="manifest" href="manifest.json" />
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
+  }
+</script>{
   "name": "Mini Windows",
   "short_name": "MiniWin",
   "description": "Um sistema Mini Windows portátil, leve e avançado.",
