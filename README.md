@@ -1657,4 +1657,9 @@ setInterval(() => {
   if (gamepadIndex === null) checkGamepadConnection();
   else pollGamepad();
 }, 100);
-<script src="system/gamepad-handler.js" defer></script>
+<script src="system/gamepad- .app-window.focused {
+  outline: 3px solid #00f;
+}handler.js" defer></script>
+.app-window.focused {
+  outline: 3px solid #00f;
+}
