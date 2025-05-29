@@ -1,4 +1,12 @@
-setWallpaper("url-da-imagem.jpg");// Mini Windows Kernel
+MiniWindows/
+├── index.html
+├── manifest.json         ← ⬇️ Abaixo
+├── service-worker.js     ← ⬇️ Abaixo
+├── script.js
+├── style.css
+├── icons/
+│   ├── icon-192.png
+│   └── icon-512.pngsetWallpaper("url-da-imagem.jpg");// Mini Windows Kernel
 document.addEventListener("DOMContentLoaded", () => {
   const zIndexStart = 100;
   let zCounter = zIndexStart;
