@@ -5378,3 +5378,77 @@ document.addEventListener("keydown", e => {
   if (e.key === "g") openGamingHub();
 });
 </script>
+<!-- Gaming Hub com integração Xbox, Game Pass, Discord, Steam, Epic Games e Tela Inicial Xbox Style --><!-- Tela Inicial Xbox Style --><div id="xboxHome" class="fixed inset-0 bg-black text-white p-8 grid grid-cols-4 gap-4 z-40 hidden">
+  <div onclick="openGamingHub()" class="bg-green-700 hover:bg-green-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+    🎮<span class="mt-2 font-bold">Game Pass</span>
+  </div>
+  <div onclick="openDiscord()" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+    💬<span class="mt-2 font-bold">Discord</span>
+  </div>
+  <div onclick="openSteam()" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+    🕹️<span class="mt-2 font-bold">Steam</span>
+  </div>
+  <div onclick="openEpic()" class="bg-purple-700 hover:bg-purple-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+    🛍️<span class="mt-2 font-bold">Epic Games</span>
+  </div>
+  <div onclick="showStore()" class="bg-green-800 hover:bg-green-700 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+    🛒<span class="mt-2 font-bold">Loja</span>
+  </div>
+  <div onclick="showFriends()" class="bg-indigo-700 hover:bg-indigo-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+    👥<span class="mt-2 font-bold">Amigos</span>
+  </div>
+  <div onclick="showAchievements()" class="bg-yellow-700 hover:bg-yellow-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+    🏆<span class="mt-2 font-bold">Conquistas</span>
+  </div>
+  <div onclick="closeXboxHome()" class="bg-red-700 hover:bg-red-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+    ✖<span class="mt-2 font-bold">Fechar</span>
+  </div>
+</div><!-- Gaming Hub (iframe apps) --><div id="gamingHub" class="hidden fixed top-12 left-12 w-[80vw] h-[80vh] bg-black text-white p-4 rounded-2xl shadow-2xl z-50 overflow-hidden">
+  <h2 class="text-2xl font-bold mb-4">🎮 Gaming Hub</h2>
+  <div class="grid grid-cols-2 gap-4 h-full">
+    <iframe id="gamepassFrame" src="" class="w-full h-full rounded-xl border border-green-600"></iframe>
+    <iframe id="discordFrame" src="" class="w-full h-full rounded-xl border border-blue-600"></iframe>
+    <iframe id="steamFrame" src="" class="w-full h-full rounded-xl border border-gray-500"></iframe>
+    <iframe id="epicFrame" src="" class="w-full h-full rounded-xl border border-purple-600"></iframe>
+  </div>
+  <button onclick="closeGamingHub()" class="absolute top-2 right-4 bg-gray-800 hover:bg-gray-700 p-2 rounded">✖ Fechar</button>
+</div><script>
+function openXboxHome() {
+  document.getElementById("xboxHome").classList.remove("hidden");
+}
+
+function closeXboxHome() {
+  document.getElementById("xboxHome").classList.add("hidden");
+}
+
+function openGamingHub() {
+  // Login automático simulando tokens salvos
+  document.getElementById("gamepassFrame").src = "https://www.xbox.com/play";
+  document.getElementById("discordFrame").src = "https://discord.com/app";
+  document.getElementById("steamFrame").src = "https://store.steampowered.com";
+  document.getElementById("epicFrame").src = "https://store.epicgames.com";
+
+  closeXboxHome();
+  document.getElementById("gamingHub").classList.remove("hidden");
+}
+
+function closeGamingHub() {
+  document.getElementById("gamingHub").classList.add("hidden");
+}
+
+function openDiscord() {
+  window.open("https://discord.com/app", "_blank");
+}
+
+function openSteam() {
+  window.open("https://store.steampowered.com", "_blank");
+}
+
+function openEpic() {
+  window.open("https://store.epicgames.com", "_blank");
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Meta" || e.key === "OS" || e.key === "Win") openXboxHome();
+});
+</script>
