@@ -1134,3 +1134,4 @@ npm run tauri build
     }
   }
 }
+src-tauri/target/release/bundle/nsis/Mini Windows_1.0.0_x64-setup.exe
