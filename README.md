@@ -1135,3 +1135,48 @@ npm run tauri build
   }
 }
 src-tauri/target/release/bundle/nsis/Mini Windows_1.0.0_x64-setup.exe
+// Libera recursos de janelas inativas
+function optimizeWindowsMemory() {
+  const windows = document.querySelectorAll(".app-window");
+  windows.forEach(win => {
+    if (!win.classList.contains("active")) {
+      // Se a janela estiver oculta ou minimizada, descarrega conteúdo pesado
+      const iframes = win.querySelectorAll("iframe, video, audio");
+      iframes.forEach(el => {
+        el.src = ""; // descarrega recursos pesados
+      });
+    }
+  });
+}
+
+// Coleta lixo manual em intervalos (simulado)
+function forceMemoryCleanup() {
+  if (window.gc) window.gc(); // para navegadores com GC manual (raro)
+  console.log("Tentando liberar memória inativa...");
+  optimizeWindowsMemory();
+}
+
+// Remove listeners antigos
+function cleanEventListeners() {
+  // Exemplo: remove handlers órfãos
+  document.querySelectorAll("*").forEach(el => {
+    el.onclick = null;
+    el.onmouseover = null;
+    el.onmousemove = null;
+    el.onkeydown = null;
+  });
+}
+
+// Reduz uso de memória em loops e timers
+function optimizeTimers() {
+  let heavyTimers = window.__timers || [];
+  heavyTimers.forEach(id => clearInterval(id));
+  window.__timers = [];
+}
+
+// Rodar automaticamente a cada 30s
+setInterval(() => {
+  forceMemoryCleanup();
+  cleanEventListeners();
+  optimizeTimers();
+}, 30000);
