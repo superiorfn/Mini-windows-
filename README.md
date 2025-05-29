@@ -4286,3 +4286,10 @@ function showToast(text) {
   </script>
 </body>
 </html>
+<button onclick="launchGame('games/space-invaders/index.html')">👾 Space Invaders</button>/games/
+  space-invaders/
+    index.html
+  tetris/
+    index.htmlfunction launchGame(path) {
+  window.open(path, "_blank", "fullscreen=yes");
+}
