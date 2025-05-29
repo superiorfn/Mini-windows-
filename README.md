@@ -1,4 +1,46 @@
-<script>
+<!-- Mini Antivírus -->
+<div id="antivirusWindow" class="window">
+  <div class="window-header">
+    🛡️ Mini Antivírus
+    <button class="close-btn" onclick="closeWindow('antivirusWindow')">X</button>
+  </div>
+  <div class="window-body" style="padding:10px">
+    <h3>🔍 Escanear Arquivo</h3>
+<!-- Mini Antivírus -->
+<div id="antivirusWindow" class="window">
+  <div class="window-header">
+    🛡️ Mini Antivírus
+    <button class="close-btn" onclick="closeWindow('antivirusWindow')">X</button>
+  </div>
+  <div class="window-body" style="padding:10px">
+    <h3>🔍 Escanear Arquivo</h3>
+    <input type="file" onchange="escanearArquivo(event)"><br><br>
+
+    <h3>🌐 Verificar Link</h3>
+    <input type="text" id="urlInput" placeholder="https://exemplo.com" style="width:90%">
+    <button onclick="verificarURL()">Verificar</button><br><br>
+
+    <h3>💻 Analisar Código</h3>
+    <textarea id="codeInput" placeholder="Cole aqui seu código..." style="width:100%; height:100px;"></textarea><br>
+    <button onclick="analisarCodigo()">Analisar Código</button>
+
+    <hr>
+    <div id="antivirusOutput" style="white-space: pre-line;"></div>
+  </div>
+</div>    <input type="file" onchange="escanearArquivo(event)"><br><br>
+
+    <h3>🌐 Verificar Link</h3>
+    <input type="text" id="urlInput" placeholder="https://exemplo.com" style="width:90%">
+    <button onclick="verificarURL()">Verificar</button><br><br>
+
+    <h3>💻 Analisar Código</h3>
+    <textarea id="codeInput" placeholder="Cole aqui seu código..." style="width:100%; height:100px;"></textarea><br>
+    <button onclick="analisarCodigo()">Analisar Código</button>
+
+    <hr>
+    <div id="antivirusOutput" style="white-space: pre-line;"></div>
+  </div>
+</div<script>
   function abrirEditorImagem() {
     document.getElementById('imagemInput').click();
   }
