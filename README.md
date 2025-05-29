@@ -5838,3 +5838,364 @@ function setPerformanceMode(mode) {
 // Aplicar ao iniciar
 applyPerformanceMode(performanceMode);
 </script>
+<!-- Mini Windows com Otimização de GPU e Filtros de Performance com Input Lag Reduzido --><!-- Notificação de Input Lag --><div id="inputLagNotify" class="fixed bottom-16 right-4 bg-orange-600 text-white px-4 py-2 rounded-lg shadow-lg hidden transition-opacity duration-500">⚡ Modo de Resposta Rápida Ativado</div><!-- Menu Flutuante de Performance --><div id="performanceMenu" class="fixed bottom-4 right-4 z-50 bg-black bg-opacity-80 text-white p-4 rounded-2xl shadow-lg space-y-2 w-64">
+  <h3 class="font-bold text-lg mb-2">⚙️ Filtro de Performance</h3>
+  <button onclick="setPerformanceMode('max')" class="w-full bg-green-700 hover:bg-green-600 px-3 py-2 rounded">🟢 Máximo</button>
+  <button onclick="setPerformanceMode('balanced')" class="w-full bg-blue-700 hover:bg-blue-600 px-3 py-2 rounded">⚖️ Equilibrado</button>
+  <button onclick="setPerformanceMode('eco')" class="w-full bg-yellow-700 hover:bg-yellow-600 px-3 py-2 rounded">🟡 Economia</button>
+  <button onclick="setPerformanceMode('auto')" class="w-full bg-purple-700 hover:bg-purple-600 px-3 py-2 rounded">🔄 Autoajuste</button>
+  <button onclick="setPerformanceMode('lowres')" class="w-full bg-red-700 hover:bg-red-600 px-3 py-2 rounded">🟥 Baixa Resolução</button>
+  <button onclick="setPerformanceMode('lowram')" class="w-full bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded">💾 Baixo Uso de RAM</button>
+  <button onclick="setPerformanceMode('netopt')" class="w-full bg-cyan-700 hover:bg-cyan-600 px-3 py-2 rounded">🌐 Otimizar Rede</button>
+  <button onclick="setPerformanceMode('gpuopt')" class="w-full bg-pink-700 hover:bg-pink-600 px-3 py-2 rounded">🎮 Reduzir GPU</button>
+  <button onclick="setPerformanceMode('lowinputlag')" class="w-full bg-orange-700 hover:bg-orange-600 px-3 py-2 rounded">⚡ Reduzir Input Lag</button>
+</div><script>
+const root = document.documentElement;
+let performanceMode = localStorage.getItem("performanceMode") || "balanced";
+
+function applyPerformanceMode(mode) {
+  performanceMode = mode;
+  localStorage.setItem("performanceMode", mode);
+
+  switch (mode) {
+    case "max":
+      root.style.setProperty("--animation-speed", "0s");
+      root.style.setProperty("--shadow", "none");
+      root.style.setProperty("--resolution-scale", "1");
+      root.style.setProperty("--preload-apps", "true");
+      break;
+    case "balanced":
+      root.style.setProperty("--animation-speed", "0.3s");
+      root.style.setProperty("--shadow", "0 4px 12px rgba(0,0,0,0.3)");
+      root.style.setProperty("--resolution-scale", "1");
+      root.style.setProperty("--preload-apps", "false");
+      break;
+    case "eco":
+      root.style.setProperty("--animation-speed", "0.1s");
+      root.style.setProperty("--shadow", "none");
+      root.style.setProperty("--resolution-scale", "0.75");
+      root.style.setProperty("--preload-apps", "false");
+      break;
+    case "auto":
+      let fpsValue = parseInt(document.getElementById("fps").innerText.split(": ")[1]);
+      if (fpsValue < 25) applyPerformanceMode("eco");
+      else if (fpsValue > 50) applyPerformanceMode("max");
+      else applyPerformanceMode("balanced");
+      return;
+    case "lowres":
+      document.body.style.imageRendering = "pixelated";
+      document.querySelectorAll("canvas, img, video").forEach(el => el.style.imageRendering = "pixelated");
+      break;
+    case "lowram":
+      document.querySelectorAll(".app").forEach(app => {
+        if (!app.classList.contains("active")) app.style.display = "none";
+      });
+      break;
+    case "netopt":
+      optimizeNetwork();
+      break;
+    case "gpuopt":
+      optimizeGPU();
+      break;
+    case "lowinputlag":
+      reduceInputLag();
+      showInputLagNotification();
+      break;
+  }
+
+  document.body.style.setProperty("transition", `all var(--animation-speed)`);
+  document.querySelectorAll("*").forEach(el => {
+    el.style.boxShadow = getComputedStyle(root).getPropertyValue("--shadow");
+  });
+}
+
+function optimizeNetwork() {
+  document.querySelectorAll(".app").forEach(app => {
+    if (!app.classList.contains("active")) {
+      app.dataset.network = "paused";
+    }
+  });
+  console.log("Rede otimizada: apps em segundo plano pausados");
+  alert("🌐 Otimização de rede ativada! Apps ociosos pausados.");
+}
+
+function optimizeGPU() {
+  document.body.style.filter = "brightness(0.9) contrast(0.9) saturate(0.8)";
+  document.querySelectorAll(".effect, .glow, .particle").forEach(el => el.remove());
+  alert("🎮 Otimização de GPU aplicada: efeitos reduzidos.");
+}
+
+function reduceInputLag() {
+  document.body.style.setProperty("cursor", "default");
+  document.querySelectorAll("* :not(input):not(textarea)").forEach(el => el.tabIndex = -1);
+  document.addEventListener("keydown", e => e.preventDefault(), { passive: true });
+  document.addEventListener("mousedown", e => e.preventDefault(), { passive: true });
+  console.log("⚡ Input Lag minimizado");
+}
+
+function showInputLagNotification() {
+  const notify = document.getElementById("inputLagNotify");
+  notify.classList.remove("hidden");
+  notify.style.opacity = 1;
+  setTimeout(() => {
+    notify.style.opacity = 0;
+    setTimeout(() => notify.classList.add("hidden"), 500);
+  }, 3000);
+}
+
+function setPerformanceMode(mode) {
+  applyPerformanceMode(mode);
+  alert("Modo de performance: " + mode);
+}
+
+// Detecta controle ou teclado pressionado e ativa modo de input lag reduzido
+window.addEventListener("gamepadconnected", () => setPerformanceMode("lowinputlag"));
+document.addEventListener("keydown", e => {
+  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Space", "w", "a", "s", "d"].includes(e.key.toLowerCase())) {
+    setPerformanceMode("lowinputlag");
+  }
+});
+
+// Aplicar ao iniciar
+applyPerformanceMode(performanceMode);
+</script><!-- Mini Windows com Otimização de GPU e Filtros de Performance com Input Lag Reduzido --><!-- Notificação de Input Lag --><div id="inputLagNotify" class="fixed bottom-16 right-4 bg-orange-600 text-white px-4 py-2 rounded-lg shadow-lg hidden transition-opacity duration-500">⚡ Modo de Resposta Rápida Ativado</div><!-- Menu Flutuante de Performance --><div id="performanceMenu" class="fixed bottom-4 right-4 z-50 bg-black bg-opacity-80 text-white p-4 rounded-2xl shadow-lg space-y-2 w-64">
+  <h3 class="font-bold text-lg mb-2">⚙️ Filtro de Performance</h3>
+  <button onclick="setPerformanceMode('max')" class="w-full bg-green-700 hover:bg-green-600 px-3 py-2 rounded">🟢 Máximo</button>
+  <button onclick="setPerformanceMode('balanced')" class="w-full bg-blue-700 hover:bg-blue-600 px-3 py-2 rounded">⚖️ Equilibrado</button>
+  <button onclick="setPerformanceMode('eco')" class="w-full bg-yellow-700 hover:bg-yellow-600 px-3 py-2 rounded">🟡 Economia</button>
+  <button onclick="setPerformanceMode('auto')" class="w-full bg-purple-700 hover:bg-purple-600 px-3 py-2 rounded">🔄 Autoajuste</button>
+  <button onclick="setPerformanceMode('lowres')" class="w-full bg-red-700 hover:bg-red-600 px-3 py-2 rounded">🟥 Baixa Resolução</button>
+  <button onclick="setPerformanceMode('lowram')" class="w-full bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded">💾 Baixo Uso de RAM</button>
+  <button onclick="setPerformanceMode('netopt')" class="w-full bg-cyan-700 hover:bg-cyan-600 px-3 py-2 rounded">🌐 Otimizar Rede</button>
+  <button onclick="setPerformanceMode('gpuopt')" class="w-full bg-pink-700 hover:bg-pink-600 px-3 py-2 rounded">🎮 Reduzir GPU</button>
+  <button onclick="setPerformanceMode('lowinputlag')" class="w-full bg-orange-700 hover:bg-orange-600 px-3 py-2 rounded">⚡ Reduzir Input Lag</button>
+</div><script>
+const root = document.documentElement;
+let performanceMode = localStorage.getItem("performanceMode") || "balanced";
+
+function applyPerformanceMode(mode) {
+  performanceMode = mode;
+  localStorage.setItem("performanceMode", mode);
+
+  switch (mode) {
+    case "max":
+      root.style.setProperty("--animation-speed", "0s");
+      root.style.setProperty("--shadow", "none");
+      root.style.setProperty("--resolution-scale", "1");
+      root.style.setProperty("--preload-apps", "true");
+      break;
+    case "balanced":
+      root.style.setProperty("--animation-speed", "0.3s");
+      root.style.setProperty("--shadow", "0 4px 12px rgba(0,0,0,0.3)");
+      root.style.setProperty("--resolution-scale", "1");
+      root.style.setProperty("--preload-apps", "false");
+      break;
+    case "eco":
+      root.style.setProperty("--animation-speed", "0.1s");
+      root.style.setProperty("--shadow", "none");
+      root.style.setProperty("--resolution-scale", "0.75");
+      root.style.setProperty("--preload-apps", "false");
+      break;
+    case "auto":
+      let fpsValue = parseInt(document.getElementById("fps").innerText.split(": ")[1]);
+      if (fpsValue < 25) applyPerformanceMode("eco");
+      else if (fpsValue > 50) applyPerformanceMode("max");
+      else applyPerformanceMode("balanced");
+      return;
+    case "lowres":
+      document.body.style.imageRendering = "pixelated";
+      document.querySelectorAll("canvas, img, video").forEach(el => el.style.imageRendering = "pixelated");
+      break;
+    case "lowram":
+      document.querySelectorAll(".app").forEach(app => {
+        if (!app.classList.contains("active")) app.style.display = "none";
+      });
+      break;
+    case "netopt":
+      optimizeNetwork();
+      break;
+    case "gpuopt":
+      optimizeGPU();
+      break;
+    case "lowinputlag":
+      reduceInputLag();
+      showInputLagNotification();
+      break;
+  }
+
+  document.body.style.setProperty("transition", `all var(--animation-speed)`);
+  document.querySelectorAll("*").forEach(el => {
+    el.style.boxShadow = getComputedStyle(root).getPropertyValue("--shadow");
+  });
+}
+
+function optimizeNetwork() {
+  document.querySelectorAll(".app").forEach(app => {
+    if (!app.classList.contains("active")) {
+      app.dataset.network = "paused";
+    }
+  });
+  console.log("Rede otimizada: apps em segundo plano pausados");
+  alert("🌐 Otimização de rede ativada! Apps ociosos pausados.");
+}
+
+function optimizeGPU() {
+  document.body.style.filter = "brightness(0.9) contrast(0.9) saturate(0.8)";
+  document.querySelectorAll(".effect, .glow, .particle").forEach(el => el.remove());
+  alert("🎮 Otimização de GPU aplicada: efeitos reduzidos.");
+}
+
+function reduceInputLag() {
+  document.body.style.setProperty("cursor", "default");
+  document.querySelectorAll("* :not(input):not(textarea)").forEach(el => el.tabIndex = -1);
+  document.addEventListener("keydown", e => e.preventDefault(), { passive: true });
+  document.addEventListener("mousedown", e => e.preventDefault(), { passive: true });
+  console.log("⚡ Input Lag minimizado");
+}
+
+function showInputLagNotification() {
+  const notify = document.getElementById("inputLagNotify");
+  notify.classList.remove("hidden");
+  notify.style.opacity = 1;
+  setTimeout(() => {
+    notify.style.opacity = 0;
+    setTimeout(() => notify.classList.add("hidden"), 500);
+  }, 3000);
+}
+
+function setPerformanceMode(mode) {
+  applyPerformanceMode(mode);
+  alert("Modo de performance: " + mode);
+}
+
+// Detecta controle ou teclado pressionado e ativa modo de input lag reduzido
+window.addEventListener("gamepadconnected", () => setPerformanceMode("lowinputlag"));
+document.addEventListener("keydown", e => {
+  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Space", "w", "a", "s", "d"].includes(e.key.toLowerCase())) {
+    setPerformanceMode("lowinputlag");
+  }
+});
+
+// Aplicar ao iniciar
+applyPerformanceMode(performanceMode);
+</script><!-- Mini Windows com Otimização de GPU e Filtros de Performance com Input Lag Reduzido --><!-- Notificação de Input Lag --><div id="inputLagNotify" class="fixed bottom-16 right-4 bg-orange-600 text-white px-4 py-2 rounded-lg shadow-lg hidden transition-opacity duration-500">⚡ Modo de Resposta Rápida Ativado</div><!-- Menu Flutuante de Performance --><div id="performanceMenu" class="fixed bottom-4 right-4 z-50 bg-black bg-opacity-80 text-white p-4 rounded-2xl shadow-lg space-y-2 w-64">
+  <h3 class="font-bold text-lg mb-2">⚙️ Filtro de Performance</h3>
+  <button onclick="setPerformanceMode('max')" class="w-full bg-green-700 hover:bg-green-600 px-3 py-2 rounded">🟢 Máximo</button>
+  <button onclick="setPerformanceMode('balanced')" class="w-full bg-blue-700 hover:bg-blue-600 px-3 py-2 rounded">⚖️ Equilibrado</button>
+  <button onclick="setPerformanceMode('eco')" class="w-full bg-yellow-700 hover:bg-yellow-600 px-3 py-2 rounded">🟡 Economia</button>
+  <button onclick="setPerformanceMode('auto')" class="w-full bg-purple-700 hover:bg-purple-600 px-3 py-2 rounded">🔄 Autoajuste</button>
+  <button onclick="setPerformanceMode('lowres')" class="w-full bg-red-700 hover:bg-red-600 px-3 py-2 rounded">🟥 Baixa Resolução</button>
+  <button onclick="setPerformanceMode('lowram')" class="w-full bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded">💾 Baixo Uso de RAM</button>
+  <button onclick="setPerformanceMode('netopt')" class="w-full bg-cyan-700 hover:bg-cyan-600 px-3 py-2 rounded">🌐 Otimizar Rede</button>
+  <button onclick="setPerformanceMode('gpuopt')" class="w-full bg-pink-700 hover:bg-pink-600 px-3 py-2 rounded">🎮 Reduzir GPU</button>
+  <button onclick="setPerformanceMode('lowinputlag')" class="w-full bg-orange-700 hover:bg-orange-600 px-3 py-2 rounded">⚡ Reduzir Input Lag</button>
+</div><script>
+const root = document.documentElement;
+let performanceMode = localStorage.getItem("performanceMode") || "balanced";
+
+function applyPerformanceMode(mode) {
+  performanceMode = mode;
+  localStorage.setItem("performanceMode", mode);
+
+  switch (mode) {
+    case "max":
+      root.style.setProperty("--animation-speed", "0s");
+      root.style.setProperty("--shadow", "none");
+      root.style.setProperty("--resolution-scale", "1");
+      root.style.setProperty("--preload-apps", "true");
+      break;
+    case "balanced":
+      root.style.setProperty("--animation-speed", "0.3s");
+      root.style.setProperty("--shadow", "0 4px 12px rgba(0,0,0,0.3)");
+      root.style.setProperty("--resolution-scale", "1");
+      root.style.setProperty("--preload-apps", "false");
+      break;
+    case "eco":
+      root.style.setProperty("--animation-speed", "0.1s");
+      root.style.setProperty("--shadow", "none");
+      root.style.setProperty("--resolution-scale", "0.75");
+      root.style.setProperty("--preload-apps", "false");
+      break;
+    case "auto":
+      let fpsValue = parseInt(document.getElementById("fps").innerText.split(": ")[1]);
+      if (fpsValue < 25) applyPerformanceMode("eco");
+      else if (fpsValue > 50) applyPerformanceMode("max");
+      else applyPerformanceMode("balanced");
+      return;
+    case "lowres":
+      document.body.style.imageRendering = "pixelated";
+      document.querySelectorAll("canvas, img, video").forEach(el => el.style.imageRendering = "pixelated");
+      break;
+    case "lowram":
+      document.querySelectorAll(".app").forEach(app => {
+        if (!app.classList.contains("active")) app.style.display = "none";
+      });
+      break;
+    case "netopt":
+      optimizeNetwork();
+      break;
+    case "gpuopt":
+      optimizeGPU();
+      break;
+    case "lowinputlag":
+      reduceInputLag();
+      showInputLagNotification();
+      break;
+  }
+
+  document.body.style.setProperty("transition", `all var(--animation-speed)`);
+  document.querySelectorAll("*").forEach(el => {
+    el.style.boxShadow = getComputedStyle(root).getPropertyValue("--shadow");
+  });
+}
+
+function optimizeNetwork() {
+  document.querySelectorAll(".app").forEach(app => {
+    if (!app.classList.contains("active")) {
+      app.dataset.network = "paused";
+    }
+  });
+  console.log("Rede otimizada: apps em segundo plano pausados");
+  alert("🌐 Otimização de rede ativada! Apps ociosos pausados.");
+}
+
+function optimizeGPU() {
+  document.body.style.filter = "brightness(0.9) contrast(0.9) saturate(0.8)";
+  document.querySelectorAll(".effect, .glow, .particle").forEach(el => el.remove());
+  alert("🎮 Otimização de GPU aplicada: efeitos reduzidos.");
+}
+
+function reduceInputLag() {
+  document.body.style.setProperty("cursor", "default");
+  document.querySelectorAll("* :not(input):not(textarea)").forEach(el => el.tabIndex = -1);
+  document.addEventListener("keydown", e => e.preventDefault(), { passive: true });
+  document.addEventListener("mousedown", e => e.preventDefault(), { passive: true });
+  console.log("⚡ Input Lag minimizado");
+}
+
+function showInputLagNotification() {
+  const notify = document.getElementById("inputLagNotify");
+  notify.classList.remove("hidden");
+  notify.style.opacity = 1;
+  setTimeout(() => {
+    notify.style.opacity = 0;
+    setTimeout(() => notify.classList.add("hidden"), 500);
+  }, 3000);
+}
+
+function setPerformanceMode(mode) {
+  applyPerformanceMode(mode);
+  alert("Modo de performance: " + mode);
+}
+
+// Detecta controle ou teclado pressionado e ativa modo de input lag reduzido
+window.addEventListener("gamepadconnected", () => setPerformanceMode("lowinputlag"));
+document.addEventListener("keydown", e => {
+  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Space", "w", "a", "s", "d"].includes(e.key.toLowerCase())) {
+    setPerformanceMode("lowinputlag");
+  }
+});
+
+// Aplicar ao iniciar
+applyPerformanceMode(performanceMode);
+</script>
