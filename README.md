@@ -743,3 +743,236 @@ calculator.html
     <iframe src="apps/calculadora/calculator.html" style="width:100%; height:100%; border:none;"></iframe>
   </div>
 </div><button onclick="openWindow('calcWindow')">🧮 Calculadora</button>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora Avançada</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --fg: white;
+      --btn: #333;
+      --btn-hover: #444;
+      --accent: #0078D7;
+    }
+    body.light {
+      --bg: #f0f0f0;
+      --fg: #111;
+      --btn: #ddd;
+      --btn-hover: #ccc;
+      --accent: #0078D7;
+    }
+
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+    }
+
+    #calc {
+      max-width: 420px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    #display {
+      width: 100%;
+      height: 60px;
+      font-size: 24px;
+      background: var(--btn);
+      color: var(--fg);
+      text-align: right;
+      padding: 10px;
+      border: none;
+      box-sizing: border-box;
+    }
+
+    #preview {
+      text-align: right;
+      color: gray;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 18px;
+      background: var(--btn);
+      border: none;
+      color: var(--fg);
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--btn-hover);
+    }
+
+    .equal {
+      background: var(--accent);
+      grid-column: span 5;
+    }
+
+    .equal:hover {
+      background: #005fa3;
+    }
+
+    #history {
+      margin-top: 20px;
+      font-size: 14px;
+      background: var(--btn);
+      padding: 10px;
+      max-height: 100px;
+      overflow-y: auto;
+      border-radius: 5px;
+    }
+
+    #themeToggle {
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="calc">
+    <div id="preview"></div>
+    <input type="text" id="display" readonly>
+
+    <div class="buttons">
+      <button onclick="input('7')">7</button>
+      <button onclick="input('8')">8</button>
+      <button onclick="input('9')">9</button>
+      <button onclick="input('/')">÷</button>
+      <button onclick="clearDisplay()">C</button>
+
+      <button onclick="input('4')">4</button>
+      <button onclick="input('5')">5</button>
+      <button onclick="input('6')">6</button>
+      <button onclick="input('*')">×</button>
+      <button onclick="del()">←</button>
+
+      <button onclick="input('1')">1</button>
+      <button onclick="input('2')">2</button>
+      <button onclick="input('3')">3</button>
+      <button onclick="input('-')">−</button>
+      <button onclick="input('(')">(</button>
+
+      <button onclick="input('0')">0</button>
+      <button onclick="input('.')">.</button>
+      <button onclick="input('%')">%</button>
+      <button onclick="input('+')">+</button>
+      <button onclick="input(')')">)</button>
+
+      <button onclick="func('sqrt')">√</button>
+      <button onclick="func('square')">x²</button>
+      <button onclick="func('recip')">1/x</button>
+      <button onclick="input('Math.PI')">π</button>
+      <button onclick="input('Math.E')">e</button>
+
+      <button onclick="func('sin')">sin</button>
+      <button onclick="func('cos')">cos</button>
+      <button onclick="func('tan')">tan</button>
+      <button onclick="func('log')">log</button>
+      <button onclick="func('ln')">ln</button>
+
+      <button class="equal" onclick="calculate()">=</button>
+    </div>
+
+    <div id="themeToggle">
+      <button onclick="toggleTheme()">🌓 Mudar Tema</button>
+    </div>
+
+    <div id="history"></div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    const preview = document.getElementById('preview');
+    const history = document.getElementById('history');
+
+    function input(value) {
+      display.value += value;
+      updatePreview();
+    }
+
+    function clearDisplay() {
+      display.value = '';
+      preview.textContent = '';
+    }
+
+    function del() {
+      display.value = display.value.slice(0, -1);
+      updatePreview();
+    }
+
+    function func(name) {
+      if (!display.value) return;
+      try {
+        const x = eval(display.value);
+        let result;
+        switch (name) {
+          case 'sqrt': result = Math.sqrt(x); break;
+          case 'square': result = x ** 2; break;
+          case 'recip': result = 1 / x; break;
+          case 'sin': result = Math.sin(x); break;
+          case 'cos': result = Math.cos(x); break;
+          case 'tan': result = Math.tan(x); break;
+          case 'log': result = Math.log10(x); break;
+          case 'ln': result = Math.log(x); break;
+        }
+        display.value = result;
+        preview.textContent = '';
+      } catch {
+        display.value = 'Erro';
+      }
+    }
+
+    function calculate() {
+      try {
+        const expr = display.value;
+        const result = eval(expr);
+        display.value = result;
+        preview.textContent = '';
+        history.innerHTML += `<div>${expr} = ${result}</div>`;
+      } catch {
+        display.value = 'Erro';
+      }
+    }
+
+    function updatePreview() {
+      try {
+        const result = eval(display.value);
+        preview.textContent = `= ${result}`;
+      } catch {
+        preview.textContent = '';
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+    }
+
+    // Suporte a teclado físico
+    document.addEventListener('keydown', (e) => {
+      if (/\d|\+|\-|\*|\/|||\./.test(e.key)) {
+        input(e.key);
+      } else if (e.key === 'Backspace') {
+        del();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        calculate();
+      } else if (e.key === 'c' || e.key === 'Escape') {
+        clearDisplay();
+      }
+    });
+  </script>
+</body>
+</html>
