@@ -1072,3 +1072,8 @@ npx cap init miniwindows com.exemplo.miniwindows
 npx cap add android
 npx cap copy
 npx cap open android
+npm create tauri-app mkdir miniwindows-exe
+cd miniwindows-exe
+npm create tauri-appmkdir miniwindows-exe
+cd miniwindows-exe
+npm create tauri-app
