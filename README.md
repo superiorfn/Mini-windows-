@@ -5152,3 +5152,207 @@ document.addEventListener("keydown", e => {
 
     loadUser();
   </script>
+<script>
+    const soundOpen = document.getElementById("sound-open");
+    const soundNav = document.getElementById("sound-nav");
+    const soundOk = document.getElementById("sound-ok");
+    const soundError = document.getElementById("sound-error");
+    const notificationArea = document.getElementById("notifications");
+
+    let currentUser = null;
+    let userList = JSON.parse(localStorage.getItem("userList") || "[]");
+
+    function playNav() { soundNav.currentTime = 0; soundNav.play(); }
+    function playOk() { soundOk.currentTime = 0; soundOk.play(); }
+    function playError() { soundError.currentTime = 0; soundError.play(); }
+
+    function toggleStartMenu() {
+      const menu = document.getElementById("startMenu");
+      if (menu.classList.contains("active")) {
+        menu.classList.remove("active");
+        setTimeout(() => (menu.style.display = "none"), 300);
+      } else {
+        menu.style.display = "block";
+        setTimeout(() => menu.classList.add("active"), 10);
+        soundOpen.currentTime = 0;
+        soundOpen.play();
+      }
+    }
+
+    function showToast(text) {
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = text;
+      notificationArea.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function openApp(appName) {
+      showToast(`Abrindo ${appName}...`);
+      window.open(`apps/${appName}/index.html`, "_blank");
+    }
+
+    function launchGame(path, title = "Jogo") {
+      const win = window.open(path, '_blank', 'width=1024,height=768');
+      saveLastGame(path);
+      registerPlay(title);
+    }
+
+    function saveLastGame(path) {
+      localStorage.setItem("lastGame", path);
+      if (currentUser) {
+        localStorage.setItem(`progress_${currentUser.name}`, path);
+      }
+    }
+
+    function loadLastGame() {
+      let path = localStorage.getItem("lastGame");
+      if (currentUser) {
+        path = localStorage.getItem(`progress_${currentUser.name}`) || path;
+      }
+      if (path) {
+        showToast("Carregando jogo salvo...");
+        launchGame(path);
+      } else {
+        showToast("Nenhum jogo salvo encontrado.");
+      }
+    }
+
+    function showGameGallery() {
+      document.getElementById('gameGallery').classList.remove('hidden');
+    }
+
+    function closeGameGallery() {
+      document.getElementById('gameGallery').classList.add('hidden');
+    }
+
+    function unlockAchievement(title, description) {
+      const key = currentUser ? `achievements_${currentUser.name}` : "achievements";
+      const achievements = JSON.parse(localStorage.getItem(key) || "[]");
+      if (!achievements.some(a => a.title === title)) {
+        achievements.push({ title, description });
+        localStorage.setItem(key, JSON.stringify(achievements));
+        showToast(`🏆 Conquista: ${title}`);
+      }
+    }
+
+    function registerPlay(gameTitle) {
+      const key = currentUser ? `scoreboard_${currentUser.name}` : "scoreboard";
+      const scores = JSON.parse(localStorage.getItem(key) || "{}");
+      scores[gameTitle] = (scores[gameTitle] || 0) + 1;
+      localStorage.setItem(key, JSON.stringify(scores));
+
+      if (scores[gameTitle] === 10) {
+        unlockAchievement(`Veterano de ${gameTitle}`, `Você jogou ${gameTitle} 10 vezes!`);
+      }
+    }
+
+    function showAchievements() {
+      const key = currentUser ? `achievements_${currentUser.name}` : "achievements";
+      const data = JSON.parse(localStorage.getItem(key) || "[]");
+      alert("Conquistas desbloqueadas:\n\n" + data.map(a => `🏆 ${a.title}: ${a.description}`).join("\n"));
+    }
+
+    function showScores() {
+      const key = currentUser ? `scoreboard_${currentUser.name}` : "scoreboard";
+      const data = JSON.parse(localStorage.getItem(key) || "{}");
+      const lines = Object.entries(data).map(([game, count]) => `${game}: ${count} partidas`);
+      alert("Ranking de Jogos:\n\n" + lines.join("\n"));
+    }
+
+    function loginUser() {
+      const name = prompt("Digite seu nome de usuário:");
+      if (!name) return;
+      const avatar = prompt("Cole aqui a URL de seu avatar ou deixe em branco para padrão:") || "https://i.imgur.com/0y0y0y0.png";
+      currentUser = { name, avatar };
+      userList = userList.filter(u => u.name !== name);
+      userList.push(currentUser);
+      localStorage.setItem("userList", JSON.stringify(userList));
+      localStorage.setItem("user", JSON.stringify(currentUser));
+      showToast(`Bem-vindo(a), ${name}!`);
+    }
+
+    function switchUser() {
+      const names = userList.map(u => u.name);
+      const choice = prompt("Usuários:\n" + names.join("\n") + "\n\nDigite o nome para alternar:");
+      const found = userList.find(u => u.name === choice);
+      if (found) {
+        currentUser = found;
+        localStorage.setItem("user", JSON.stringify(currentUser));
+        showToast(`Usuário atual: ${currentUser.name}`);
+      } else {
+        showToast("Usuário não encontrado.");
+      }
+    }
+
+    function loadUser() {
+      const data = localStorage.getItem("user");
+      if (data) {
+        currentUser = JSON.parse(data);
+        showToast(`Usuário carregado: ${currentUser.name}`);
+      } else {
+        loginUser();
+      }
+    }
+
+    function showStore() {
+      const games = [
+        { title: "Tetris", path: "games/tetris/index.html" },
+        { title: "Snake", path: "games/snake/index.html" },
+        { title: "Invaders", path: "games/invaders/index.html" }
+      ];
+      const list = games.map(g => `<li>${g.title} <button onclick="installGame('${g.title}', '${g.path}')">Instalar</button></li>`).join("");
+      const html = `<ul>${list}</ul>`;
+      const win = window.open("", "Loja de Jogos", "width=400,height=600");
+      win.document.write(`<h1>Loja Xbox</h1>${html}`);
+    }
+
+    function installGame(title, path) {
+      const key = currentUser ? `installedGames_${currentUser.name}` : "installedGames";
+      const installed = JSON.parse(localStorage.getItem(key) || "[]");
+      if (!installed.some(g => g.title === title)) {
+        installed.push({ title, path });
+        localStorage.setItem(key, JSON.stringify(installed));
+        showToast(`${title} instalado com sucesso!`);
+      }
+    }
+
+    function showMultiplayerInfo() {
+      alert("Multiplayer local ativado!\nJogador 1: Teclado\nJogador 2: Controle ou outra parte do teclado.");
+    }
+
+    function showFriends() {
+      const amigos = userList.map(u => `${u.name} - ${(Math.random() > 0.5 ? "🟢 Online" : "⚪ Offline")}`);
+      alert("Amigos:\n\n" + amigos.join("\n"));
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "m") toggleStartMenu();
+      if (e.key === "g") showGameGallery();
+      if (e.key === "l") loadLastGame();
+      if (e.key === "a") showAchievements();
+      if (e.key === "r") showScores();
+      if (e.key === "u") loginUser();
+      if (e.key === "x") switchUser();
+      if (e.key === "s") showStore();
+      if (e.key === "p") showMultiplayerInfo();
+      if (e.key === "f") showFriends();
+    });
+
+    window.addEventListener("gamepadconnected", function(e) {
+      showToast("Controle conectado!");
+    });
+
+    setInterval(() => {
+      const gamepads = navigator.getGamepads();
+      const gp = gamepads[0];
+      if (gp) {
+        if (gp.buttons[0].pressed) toggleStartMenu();
+        if (gp.buttons[1].pressed) showGameGallery();
+        if (gp.buttons[2].pressed) showAchievements();
+        if (gp.buttons[3].pressed) showScores();
+      }
+    }, 100);
+
+    loadUser();
+</script>
