@@ -1,4 +1,4 @@
-// Mini Windows Kernel
+setWallpaper("url-da-imagem.jpg");// Mini Windows Kernel
 document.addEventListener("DOMContentLoaded", () => {
   const zIndexStart = 100;
   let zCounter = zIndexStart;
