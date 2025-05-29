@@ -2761,3 +2761,156 @@ export function initApp() {
 
   mostrarCaixa("entrada");
 }<button onclick="launchApp('gmail')">📧 Mini Gmail</button>
+export function initApp() {
+  const win = document.createElement("div");
+  win.style = "width: 100%; height: 100%; background: #fff; color: #000; font-family: sans-serif; overflow: auto;";
+  win.innerHTML = `
+    <div style="background:#d93025;color:white;padding:10px;font-size:18px;">
+      <strong>📧 Mini Gmail</strong>
+      <button style="float:right;" onclick="document.body.removeChild(this.parentElement.parentElement)">X</button>
+    </div>
+    <div style="display:flex; height: calc(100% - 40px);">
+      <div style="width:200px;background:#f1f3f4;padding:10px;">
+        <button onclick="mostrarCaixa('entrada')">📥 Caixa de Entrada</button><br><br>
+        <button onclick="mostrarCaixa('enviados')">📤 Enviados</button><br><br>
+        <button onclick="comporEmail()">✉️ Compor</button>
+      </div>
+      <div id="conteudo" style="flex:1;padding:10px;overflow-y:auto;"></div>
+    </div>
+    <audio id="som" src="https://notificationsounds.com/storage/sounds/file-sounds-1175-pristine.mp3" preload="auto"></audio>
+  `;
+  document.body.appendChild(win);
+
+  // Simulação
+  window.emails = {
+    entrada: [
+      { assunto: "Bem-vindo!", corpo: "Obrigado por usar o Mini Gmail!" },
+      { assunto: "Oferta", corpo: "Descontos exclusivos para você!" }
+    ],
+    enviados: []
+  };
+
+  window.mostrarCaixa = (tipo) => {
+    const div = document.getElementById("conteudo");
+    div.innerHTML = `<h2>${tipo === 'entrada' ? 'Caixa de Entrada' : 'Enviados'}</h2>`;
+    emails[tipo].forEach((email, i) => {
+      div.innerHTML += `
+        <div style="border-bottom:1px solid #ccc;padding:5px;">
+          <strong>${email.assunto}</strong><br>
+          <p>${email.corpo}</p>
+        </div>
+      `;
+    });
+  };
+
+  window.comporEmail = () => {
+    const div = document.getElementById("conteudo");
+    div.innerHTML = `
+      <h2>Nova Mensagem</h2>
+      <input id="destino" placeholder="Para..." style="width:100%;padding:5px;"><br><br>
+      <input id="assunto" placeholder="Assunto" style="width:100%;padding:5px;"><br><br>
+      <textarea id="corpo" style="width:100%;height:150px;padding:5px;"></textarea><br><br>
+      <button onclick="enviarEmail()">Enviar</button>
+    `;
+  };
+
+  window.enviarEmail = () => {
+    const assunto = document.getElementById("assunto").value;
+    const corpo = document.getElementById("corpo").value;
+    emails.enviados.push({ assunto, corpo });
+    alert("Mensagem enviada!");
+    mostrarCaixa("enviados");
+  };
+
+  // 🔔 Notificações e simulação
+  function notificarNovaMensagem(email) {
+    const titulo = `📧 Nova mensagem: ${email.assunto}`;
+    if (Notification.permission === "granted") {
+      new Notification(titulo, {
+        body: email.corpo,
+        icon: "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r5.png"
+      });
+    }
+
+    document.getElementById("som").play();
+  }
+
+  function simularNovaMensagem() {
+    const novoEmail = {
+      assunto: "Atualização do sistema",
+      corpo: "Seu Mini Windows foi atualizado com sucesso!"
+    };
+    emails.entrada.unshift(novoEmail);
+    notificarNovaMensagem(novoEmail);
+    mostrarCaixa("entrada");
+  }
+
+  // Pedir permissão para notificações
+  if ("Notification" in window && Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+
+  // ⏰ Simula novo e-mail a cada 90 segundos
+  setInterval(simularNovaMensagem, 90000);
+
+  mostrarCaixa("entrada");
+}npm install imapflow nodemailer dotenv cors expressconst express = require("express");
+const { ImapFlow } = require("imapflow");
+const nodemailer = require("nodemailer");
+const cors = require("cors");
+require("dotenv").config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.post("/email/receber", async (req, res) => {
+  const client = new ImapFlow({
+    host: "imap.gmail.com",
+    port: 993,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }EMAIL=seuemail@gmail.com
+PASSWORD=sua_senha{
+  "name": "Mini Gmail",
+  "short_name": "Gmail",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#d93025",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(reg => console.log('Service Worker registrado!'))
+    .catch(err => console.error('Erro ao registrar SW:', err));
+}
+</script>self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open('mini-gmail').then(cache => {
+      return cache.addAll(['./index.html', './gmail.js', './icon-192.png']);
+    })
+  );
+});
+
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(resp => resp || fetch(e.request))
+  );
+});npm install -g @bubblewrap/cli
+bubblewrap init --manifest=https://SEU_SITE/manifest.json
+bubblewrap build
+bubblewrap install
