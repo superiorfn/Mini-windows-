@@ -1107,3 +1107,30 @@ npm create tauri-app{
 }
 npm install
 npm run tauri build
+{
+  "build": {
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "devPath": "../MiniWindows",
+    "distDir": "../MiniWindows"
+  },
+  "package": {
+    "productName": "Mini Windows",
+    "version": "1.0.0"
+  },
+  "tauri": {
+    "windows": [
+      {
+        "title": "Mini Windows",
+        "width": 1280,
+        "height": 800,
+        "resizable": true
+      }
+    ],
+    "bundle": {
+      "identifier": "com.miniwindows.app",
+      "icon": ["icons/icon.ico"],
+      "targets": ["msi", "nsis"]
+    }
+  }
+}
