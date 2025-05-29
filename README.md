@@ -1,3 +1,26 @@
+let usuarioAtual = null;
+
+function fazerLogin() {
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+
+  fetch("http://localhost:3000/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, senha })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.sucesso) {
+        usuarioAtual = email;
+        document.getElementById("login").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        carregarEmails(); // opcional: carregar caixa de entrada
+      } else {
+        alert("Login inválido.");
+      }
+    });
+}
 <link rel="manifest" href="manifest.json" />
 <script>
   if ('serviceWorker' in navigator) {
@@ -3247,3 +3270,125 @@ app.post("/enviar", async (req, res) => {
   const conta = contas[de];
 
   if (!conta) return
+<div id="login" style="display: flex; flex-direction: column; gap: 10px;">
+  <h2>Login no Mini Gmail</h2>
+  <input id="email" placeholder="Email" type="email" />
+  <input id="senha" placeholder="Senha" type="password" />
+  <button onclick="fazerLogin()">Entrar</button>
+</div>
+
+<div id="app" style="display: none;">
+  <!-- Todo conteúdo do Mini Gmail aqui -->
+</div>
+<div id="login" style="display: flex; flex-direction: column; gap: 10px;">
+  <h2>Login no Mini Gmail</h2>
+  <input id="email" placeholder="Email" type="email" />
+  <input id="senha" placeholder="Senha" type="password" />
+  <button onclick="fazerLogin()">Entrar</button>
+</div>
+npm init -y
+npm install express nodemailer imapflow cors dotenv
+
+<div id="app" style="display: none;">
+  <!-- Todo conteúdo do Mini Gmail aqui -->
+</div>
+EMAIL=seuemail@gmail.com
+PASSWORD=suasenhasecreta
+const express = require("express");
+const cors = require("cors");
+const nodemailer = require("nodemailer");
+const { ImapFlow } = require("imapflow");
+require("dotenv").config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const PORT = 3000;
+
+app.post("/enviar", async (req, res) => {
+  const { to, subject, text } = req.body;
+
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }
+  });
+
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL,
+      to,
+      subject,
+      text
+    });
+    res.json({ success: true, messageId: info.messageId });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get("/receber", async (req, res) => {
+  const client = new ImapFlow({
+    host: "imap.gmail.com",
+    port: 993,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
+    }
+  });
+
+  try {
+    await client.connect();
+    await client.selectMailbox("INBOX");
+
+    const messages = [];
+
+    for await (let msg of client.fetch("1:*", { envelope: true, source: true })) {
+      messages.push({
+        de: msg.envelope.from[0].address,
+        assunto: msg.envelope.subject
+      });
+    }
+
+    await client.logout();
+    res.json(messages.reverse().slice(0, 10)); // últimos 10
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
+function enviarEmail() {
+  const para = document.getElementById("para").value;
+  const assunto = document.getElementById("assunto").value;
+  const corpo = document.getElementById("corpo").value;
+
+  fetch("http://localhost:3000/enviar", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ to: para, subject: assunto, text: corpo })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert("Email enviado com sucesso!");
+    mostrarCaixa("enviados");
+  })
+  .catch(err => alert("Erro ao enviar: " + err.message));
+}
+function carregarEmails() {
+  fetch("http://localhost:3000/receber")
+    .then(res => res.json())
+    .then(emails => {
+      emails.forEach(email => {
+        emails.entrada.unshift({ assunto: email.assunto, corpo: `De: ${email.de}` });
+      });
+      mostrarCaixa("entrada");
+    })
+    .catch(err => console.error("Erro ao carregar e-mails:", err));
+}
