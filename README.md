@@ -655,3 +655,7 @@ self.addEventListener("fetch", (event) => {
       .catch((err) => console.error("SW error:", err));
   }
 </script>
+<div class="window" id="boxedwine">
+  <div class="window-header">BoxedWine</div>
+  <iframe src="apps/boxedwine/index.html" style="width:100%; height:100%; border:0;"></iframe>
+</div>
