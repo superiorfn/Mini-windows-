@@ -1341,3 +1341,78 @@ OS.registerApp("emulador-windows", {
     return win;
   }
 });
+// input-handler.js
+
+// 🖱️ Drag & Drop para janelas
+function enableWindowDragging(win) {
+  const titleBar = win.querySelector(".titlebar");
+  if (!titleBar) return;
+
+  let offsetX, offsetY;
+
+  titleBar.onmousedown = (e) => {
+    offsetX = e.clientX - win.offsetLeft;
+    offsetY = e.clientY - win.offsetTop;
+    document.onmousemove = (e) => {
+      win.style.left = `${e.clientX - offsetX}px`;
+      win.style.top = `${e.clientY - offsetY}px`;
+    };
+    document.onmouseup = () => {
+      document.onmousemove = null;
+      document.onmouseup = null;
+    };
+  };
+}
+
+// 🎹 Atalhos globais de teclado
+function setupGlobalKeyboardShortcuts() {
+  window.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key === "q") {
+      alert("Saindo do Mini Windows...");
+      // Aqui você pode criar uma função de logout
+    }
+
+    if (e.ctrlKey && e.key === "n") {
+      if (OS && OS.launch) OS.launch("navegador");
+    }
+
+    if (e.key === "Escape") {
+      // Fecha a última janela (se implementado)
+      const lastWindow = document.querySelector(".app-window:last-of-type");
+      if (lastWindow) lastWindow.remove();
+    }
+  });
+}
+
+// 🖱️+🎹 Iframes interativos com foco e eventos
+function enableIframeInteraction() {
+  document.querySelectorAll("iframe").forEach((frame) => {
+    frame.setAttribute("tabindex", "0");
+    frame.addEventListener("load", () => {
+      frame.focus();
+    });
+  });
+}
+
+// 🚀 Inicialização global do input handler
+function initializeInputHandler() {
+  setupGlobalKeyboardShortcuts();
+  enableIframeInteraction();
+
+  // Ativar arrasto para todas janelas já existentes
+  document.querySelectorAll(".app-window").forEach(enableWindowDragging);
+
+  // Quando novas janelas forem adicionadas, ative automaticamente
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.classList && node.classList.contains("app-window")) {
+          enableWindowDragging(node);
+        }
+      });
+    });
+  });
+
+  observer.observe(document.body, { childList: true });
+input-handler.js
+
