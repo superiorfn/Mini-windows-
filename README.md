@@ -1045,3 +1045,24 @@ self.addEventListener("fetch", (event) => {
     )
   );
 });
+{
+  "build": {
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "devPath": "../MiniWindows",
+    "distDir": "../MiniWindows"
+  },
+  "package": {
+    "productName": "MiniWindows",
+    "version": "1.0.0"
+  },
+  "tauri": {
+    "windows": [
+      {
+        "title": "Mini Windows",
+        "width": 1280,
+        "height": 800
+      }
+    ]
+  }
+}
