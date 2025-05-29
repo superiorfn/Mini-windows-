@@ -5552,3 +5552,52 @@ document.addEventListener("keydown", e => {
 updateFPS();
 simulateTemp();
 </script>
+<!-- Mini Windows com Filtros de Performance --><!-- Menu Flutuante de Performance --><div id="performanceMenu" class="fixed bottom-4 right-4 z-50 bg-black bg-opacity-80 text-white p-4 rounded-2xl shadow-lg space-y-2 w-64">
+  <h3 class="font-bold text-lg mb-2">⚙️ Filtro de Performance</h3>
+  <button onclick="setPerformanceMode('max')" class="w-full bg-green-700 hover:bg-green-600 px-3 py-2 rounded">🟢 Máximo</button>
+  <button onclick="setPerformanceMode('balanced')" class="w-full bg-blue-700 hover:bg-blue-600 px-3 py-2 rounded">⚖️ Equilibrado</button>
+  <button onclick="setPerformanceMode('eco')" class="w-full bg-yellow-700 hover:bg-yellow-600 px-3 py-2 rounded">🟡 Economia</button>
+  <button onclick="setPerformanceMode('auto')" class="w-full bg-purple-700 hover:bg-purple-600 px-3 py-2 rounded">🔄 Autoajuste</button>
+</div><script>
+const root = document.documentElement;
+let performanceMode = localStorage.getItem("performanceMode") || "balanced";
+
+function applyPerformanceMode(mode) {
+  performanceMode = mode;
+  localStorage.setItem("performanceMode", mode);
+
+  if (mode === "max") {
+    root.style.setProperty("--animation-speed", "0s");
+    root.style.setProperty("--shadow", "none");
+    root.style.setProperty("--resolution-scale", "1");
+  } else if (mode === "balanced") {
+    root.style.setProperty("--animation-speed", "0.3s");
+    root.style.setProperty("--shadow", "0 4px 12px rgba(0,0,0,0.3)");
+    root.style.setProperty("--resolution-scale", "1");
+  } else if (mode === "eco") {
+    root.style.setProperty("--animation-speed", "0.1s");
+    root.style.setProperty("--shadow", "none");
+    root.style.setProperty("--resolution-scale", "0.75");
+  } else if (mode === "auto") {
+    let fpsValue = parseInt(document.getElementById("fps").innerText.split(": ")[1]);
+    if (fpsValue < 25) applyPerformanceMode("eco");
+    else if (fpsValue > 50) applyPerformanceMode("max");
+    else applyPerformanceMode("balanced");
+    return;
+  }
+
+  document.body.style.setProperty("transition", `all var(--animation-speed)`);
+  document.querySelectorAll("*.").forEach(el => {
+    el.style.boxShadow = getComputedStyle(root).getPropertyValue("--shadow");
+    el.style.imageRendering = performanceMode === "eco" ? "pixelated" : "auto";
+  });
+}
+
+function setPerformanceMode(mode) {
+  applyPerformanceMode(mode);
+  alert("Modo de performance: " + mode);
+}
+
+// Aplicar ao iniciar
+applyPerformanceMode(performanceMode);
+</script>
