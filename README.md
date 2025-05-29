@@ -5452,3 +5452,103 @@ document.addEventListener("keydown", e => {
   if (e.key === "Meta" || e.key === "OS" || e.key === "Win") openXboxHome();
 });
 </script>
+<!-- Mini Windows com Categorias, Mira Personalizada, Monitor de FPS e Temperatura --><!-- Mira personalizada --><div id="crosshair" class="pointer-events-none fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+  <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+</div><!-- HUD: FPS e Temperatura --><div id="hudOverlay" class="fixed top-2 right-2 text-xs bg-black bg-opacity-60 text-white px-3 py-2 rounded-lg z-50 font-mono">
+  <div id="fps">FPS: 0</div>
+  <div id="temp">Temp: 42°C</div>
+</div><!-- Tela Inicial Xbox Style com Categorias --><div id="xboxHome" class="fixed inset-0 bg-black text-white p-8 z-40 hidden overflow-y-auto">
+  <h2 class="text-3xl font-bold mb-4">🎮 Mini Windows Dashboard</h2>  <!-- Categoria: Jogos -->  <div class="mb-6">
+    <h3 class="text-xl font-semibold mb-2">🎮 Jogos</h3>
+    <div class="grid grid-cols-4 gap-4">
+      <div onclick="openGamingHub()" class="bg-green-700 hover:bg-green-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+        🟢<span class="mt-2 font-bold">Game Pass</span>
+      </div>
+    </div>
+  </div>  <!-- Categoria: Social -->  <div class="mb-6">
+    <h3 class="text-xl font-semibold mb-2">💬 Social</h3>
+    <div class="grid grid-cols-4 gap-4">
+      <div onclick="openDiscord()" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+        💬<span class="mt-2 font-bold">Discord</span>
+      </div>
+      <div onclick="showFriends()" class="bg-indigo-700 hover:bg-indigo-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+        👥<span class="mt-2 font-bold">Amigos</span>
+      </div>
+    </div>
+  </div>  <!-- Categoria: Apps -->  <div class="mb-6">
+    <h3 class="text-xl font-semibold mb-2">🛠️ Utilitários</h3>
+    <div class="grid grid-cols-4 gap-4">
+      <div onclick="openSteam()" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+        🕹️<span class="mt-2 font-bold">Steam</span>
+      </div>
+      <div onclick="openEpic()" class="bg-purple-700 hover:bg-purple-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+        🛍️<span class="mt-2 font-bold">Epic Games</span>
+      </div>
+      <div onclick="showStore()" class="bg-green-800 hover:bg-green-700 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+        🛒<span class="mt-2 font-bold">Loja</span>
+      </div>
+      <div onclick="showAchievements()" class="bg-yellow-700 hover:bg-yellow-600 p-4 rounded-2xl shadow-xl flex flex-col items-center cursor-pointer">
+        🏆<span class="mt-2 font-bold">Conquistas</span>
+      </div>
+    </div>
+  </div>  <div onclick="closeXboxHome()" class="bg-red-700 hover:bg-red-600 p-4 mt-4 w-max rounded-2xl shadow-xl flex items-center cursor-pointer">
+    ✖<span class="ml-2 font-bold">Fechar</span>
+  </div>
+</div><!-- Scripts --><script>
+function updateFPS() {
+  let lastTime = performance.now(), frame = 0;
+  function tick() {
+    const now = performance.now();
+    const delta = now - lastTime;
+    if (delta >= 1000) {
+      document.getElementById("fps").innerText = `FPS: ${frame}`;
+      frame = 0;
+      lastTime = now;
+    }
+    frame++;
+    requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+function simulateTemp() {
+  setInterval(() => {
+    const temp = 35 + Math.floor(Math.random() * 10);
+    document.getElementById("temp").innerText = `Temp: ${temp}°C`;
+  }, 3000);
+}
+
+function openXboxHome() {
+  document.getElementById("xboxHome").classList.remove("hidden");
+}
+function closeXboxHome() {
+  document.getElementById("xboxHome").classList.add("hidden");
+}
+function openGamingHub() {
+  document.getElementById("gamepassFrame").src = "https://www.xbox.com/play";
+  document.getElementById("discordFrame").src = "https://discord.com/app";
+  document.getElementById("steamFrame").src = "https://store.steampowered.com";
+  document.getElementById("epicFrame").src = "https://store.epicgames.com";
+  closeXboxHome();
+  document.getElementById("gamingHub").classList.remove("hidden");
+}
+function closeGamingHub() {
+  document.getElementById("gamingHub").classList.add("hidden");
+}
+function openDiscord() {
+  window.open("https://discord.com/app", "_blank");
+}
+function openSteam() {
+  window.open("https://store.steampowered.com", "_blank");
+}
+function openEpic() {
+  window.open("https://store.epicgames.com", "_blank");
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Meta" || e.key === "OS" || e.key === "Win") openXboxHome();
+});
+
+updateFPS();
+simulateTemp();
+</script>
