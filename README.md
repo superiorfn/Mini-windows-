@@ -2246,5 +2246,128 @@ window.addEventListener("DOMContentLoaded", createKeyboard);#virtual-keyboard {
   #virtual-keyboard {
     max-height: 45vh;
     overflow-y: auto;
+  }/editor/
+├── index.html
+├── editor.js
+├── style.css
+└── /assets/
+    └── (ícones e imagens padrão)
+}<div id="photo-editor">
+  <canvas id="canvas" width="800" height="600"></canvas>
+  <div id="tools">
+    <input type="file" id="upload" accept="image/*">
+    <button onclick="addText()">Texto</button>
+    <button onclick="applyFilter('grayscale')">P&B</button>
+    <button onclick="applyFilter('sepia')">Sépia</button>
+    <button onclick="applyFilter('invert')">Negativo</button>
+    <button onclick="adjust('brightness', 0.1)">+Brilho</button>
+    <button onclick="adjust('brightness', -0.1)">−Brilho</button>
+    <button onclick="undo()">Desfazer</button>
+    <button onclick="clearCanvas()">Limpar</button>
+    <button onclick="save()">Salvar</button>
+  </div>
+</div>
+<link rel="stylesheet" href="editor.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+<script>
+  const canvas = new fabric.Canvas('canvas');
+  const history = [];
+
+  // Upload de imagem
+  document.getElementById('upload').addEventListener('change', e => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      fabric.Image.fromURL(event.target.result, img => {
+        img.scaleToWidth(600);
+        canvas.clear();
+        canvas.add(img);
+        saveState();
+      });
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  });
+
+  function addText() {
+    const text = new fabric.IText('Texto', {
+      left: 50, top: 50, fill: '#fff', fontSize: 32
+    });
+    canvas.add(text);
+    saveState();
   }
+
+  function applyFilter(type) {
+    const active = canvas.getActiveObject();
+    if (!active || active.type !== 'image') return alert("Selecione uma imagem.");
+    const filters = {
+      grayscale: new fabric.Image.filters.Grayscale(),
+      sepia: new fabric.Image.filters.Sepia(),
+      invert: new fabric.Image.filters.Invert()
+    };
+    active.filters.push(filters[type]);
+    active.applyFilters();
+    canvas.renderAll();
+    saveState();
+  }
+
+  function adjust(type, value) {
+    const active = canvas.getActiveObject();
+    if (!active || active.type !== 'image') return alert("Selecione uma imagem.");
+    const f = new fabric.Image.filters.Brightness({ brightness: value });
+    active.filters.push(f);
+    active.applyFilters();
+    canvas.renderAll();
+    saveState();
+  }
+
+  function save() {
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL({ format: 'png' });
+    link.download = 'editado.png';
+    link.click();
+  }
+
+  function clearCanvas() {
+    canvas.clear();
+    saveState();
+  }
+
+  function saveState() {
+    const state = JSON.stringify(canvas.toJSON());
+    history.push(state);
+  }
+
+  function undo() {
+    if (history.length > 1) {
+      history.pop();
+      canvas.loadFromJSON(history[history.length - 1], canvas.renderAll.bind(canvas));
+    }
+  }
+</script>
+#photo-editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #111;
+  color: white;
+  padding: 1em;
+  border-radius: 12px;
+}
+
+#tools {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#tools button {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#tools input[type="file"] {
+  color: white;
 }
