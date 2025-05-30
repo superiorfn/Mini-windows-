@@ -8959,3 +8959,24 @@ https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg<!-- ChatGPT
     margin-bottom: 8px;
   }
 </style>
+{
+  "name": "Mini Windows",
+  "short_name": "MiniWin",
+  "description": "Um sistema Mini Windows portátil, leve e avançado.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#0078D7",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
