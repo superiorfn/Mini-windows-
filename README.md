@@ -8601,3 +8601,99 @@ body[data-performance="turbo"] {
     window.open('https://chat.openai.com/', '_blank');
   }
 </script>
+https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg<!-- ChatGPT Xbox com voz e histórico -->
+<div class="bg-[#107C10] hover:bg-green-600 transition-all duration-200 text-white p-4 rounded-2xl flex flex-col items-center justify-center cursor-pointer shadow-xl w-28 h-28 border-2 border-green-300">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" class="w-10 h-10 mb-2 drop-shadow-md" alt="ChatGPT" />
+  <span class="text-xs font-semibold text-center">ChatGPT</span>
+</div>
+
+<!-- ChatGPT Flutuante com voz -->
+<div id="chatWindow" class="fixed bottom-6 right-6 bg-gray-900 text-white w-96 max-h-[80vh] p-4 rounded-2xl shadow-2xl border-2 border-green-500 hidden flex-col">
+  <h2 class="text-lg font-bold mb-2">🧠 Mini Copilot</h2>
+  <div id="chatHistory" class="overflow-y-auto max-h-64 text-sm space-y-2 mb-3"></div>
+  <div class="flex gap-2">
+    <input id="chatInput" class="flex-1 p-2 rounded bg-gray-800 border border-gray-700 text-sm" placeholder="Digite ou use o microfone..." />
+    <button onclick="sendMessage()" class="bg-green-600 hover:bg-green-700 px-3 rounded">Enviar</button>
+    <button onclick="startVoice()" class="bg-green-800 hover:bg-green-900 px-3 rounded">🎤</button>
+  </div>
+</div>
+
+<script>
+  const chatWindow = document.getElementById('chatWindow');
+  const chatHistory = document.getElementById('chatHistory');
+  const chatInput = document.getElementById('chatInput');
+
+  // Abrir janela de chat
+  document.querySelectorAll('div[onclick="openChatGPT()"]').forEach(el => {
+    el.addEventListener('click', () => {
+      chatWindow.classList.remove('hidden');
+      loadHistory();
+    });
+  });
+
+  // Simular envio de mensagem e salvar localmente
+  function sendMessage() {
+    const msg = chatInput.value.trim();
+    if (!msg) return;
+    const response = `Você disse: ${msg}`;
+    addMessage("Você", msg);
+    addMessage("ChatGPT", response);
+    chatInput.value = "";
+    saveHistory();
+  }
+
+  // Adicionar mensagens na tela
+  function addMessage(sender, text) {
+    const msg = document.createElement('div');
+    msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
+    chatHistory.appendChild(msg);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  }
+
+  // Salvar histórico no localStorage
+  function saveHistory() {
+    localStorage.setItem("miniGPTChat", chatHistory.innerHTML);
+  }
+
+  // Carregar histórico
+  function loadHistory() {
+    chatHistory.innerHTML = localStorage.getItem("miniGPTChat") || "";
+  }
+
+  // Ditado por voz (Web Speech API)
+  function startVoice() {
+    if (!('webkitSpeechRecognition' in window)) {
+      alert("Navegador não suporta ditado por voz.");
+      return;
+    }
+
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = "pt-BR";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event) => {
+      chatInput.value = event.results[0][0].transcript;
+    };
+
+    recognition.onerror = (e) => alert("Erro no ditado: " + e.error);
+    recognition.start();
+  }
+</script><!-- Menu Iniciar com estilo Xbox -->
+<div class="grid grid-cols-4 gap-4 p-4 bg-black text-white rounded-2xl w-full max-w-4xl mx-auto">
+  <!-- ChatGPT Offline -->
+  <div onclick="document.getElementById('chatWindow').classList.remove('hidden')" 
+       class="bg-[#107C10] hover:bg-green-600 transition-all duration-200 p-4 rounded-xl flex flex-col items-center justify-center cursor-pointer shadow-xl">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" class="w-10 h-10 mb-2" />
+    <span class="text-xs font-semibold text-center">ChatGPT<br>Offline</span>
+  </div>
+
+  <!-- ChatGPT API -->
+  <div onclick="openChatReal()" 
+       class="bg-[#107C10] hover:bg-green-600 transition-all duration-200 p-4 rounded-xl flex flex-col items-center justify-center cursor-pointer shadow-xl">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" class="w-10 h-10 mb-2" />
+    <span class="text-xs font-semibold text-center">ChatGPT<br>API</span>
+  </div>
+
+  <!-- Outros apps podem ir aqui -->
+</div>
