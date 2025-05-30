@@ -8748,3 +8748,80 @@ https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg<!-- ChatGPT
   </a>
 
 </div>
+<div class="p-6 space-y-6 text-white bg-black rounded-2xl max-w-7xl mx-auto">
+
+  <!-- Redes Sociais -->
+  <h2 class="text-xl font-bold border-b border-gray-700 pb-2">🌐 Redes Sociais</h2>
+  <div class="grid grid-cols-4 gap-4">
+    <a href="https://www.instagram.com" target="_blank" class="app-card bg-[#C13584]">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" />
+      <span>Instagram</span>
+    </a>
+    <a href="https://www.tiktok.com" target="_blank" class="app-card bg-black">
+      <img src="https://cdn-icons-png.flaticon.com/512/3046/3046120.png" />
+      <span>TikTok</span>
+    </a>
+    <a href="https://www.facebook.com" target="_blank" class="app-card bg-[#3b5998]">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" />
+      <span>Facebook</span>
+    </a>
+    <a href="https://x.com" target="_blank" class="app-card bg-black">
+      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968958.png" />
+      <span>X / Twitter</span>
+    </a>
+  </div>
+
+  <!-- Streaming -->
+  <h2 class="text-xl font-bold border-b border-gray-700 pb-2">🎬 Streaming</h2>
+  <div class="grid grid-cols-4 gap-4">
+    <a href="https://www.netflix.com" target="_blank" class="app-card bg-[#E50914]">
+      <img src="https://cdn-icons-png.flaticon.com/512/5977/5977590.png" />
+      <span>Netflix</span>
+    </a>
+    <a href="https://www.youtube.com" target="_blank" class="app-card bg-[#FF0000]">
+      <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" />
+      <span>YouTube</span>
+    </a>
+    <a href="https://studio.youtube.com" target="_blank" class="app-card bg-[#FF0000]">
+      <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" />
+      <span>YT Studio</span>
+    </a>
+    <a href="https://www.twitch.tv" target="_blank" class="app-card bg-purple-700">
+      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968819.png" />
+      <span>Twitch</span>
+    </a>
+  </div>
+
+  <!-- Música -->
+  <h2 class="text-xl font-bold border-b border-gray-700 pb-2">🎵 Música</h2>
+  <div class="grid grid-cols-4 gap-4">
+    <a href="https://open.spotify.com" target="_blank" class="app-card bg-[#1DB954]">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111624.png" />
+      <span>Spotify</span>
+    </a>
+    <a href="https://music.youtube.com" target="_blank" class="app-card bg-[#FF0000]">
+      <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" />
+      <span>YouTube Music</span>
+    </a>
+    <a href="https://music.apple.com" target="_blank" class="app-card bg-white text-black">
+      <img src="https://cdn-icons-png.flaticon.com/512/732/732229.png" />
+      <span>Apple Music</span>
+    </a>
+    <a href="https://soundcloud.com" target="_blank" class="app-card bg-orange-500">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111644.png" />
+      <span>SoundCloud</span>
+    </a>
+  </div>
+</div>
+
+<!-- Estilos padrão dos blocos -->
+<style>
+  .app-card {
+    @apply p-4 rounded-xl flex flex-col items-center justify-center cursor-pointer shadow-xl hover:scale-105 transition text-xs text-center;
+  }
+  .app-card img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 8px;
+  }
+</style>
