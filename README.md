@@ -1,4 +1,26 @@
-<!DOCTYPE html>
+{manifest.jason
+  "name": "Mini Windows Xbox",
+  "short_name": "MiniWin",
+  "description": "Um sistema Mini Windows portátil, leve, avançado e integrado ao Xbox.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#107C10",
+  "orientation": "landscape",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
