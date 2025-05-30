@@ -8575,3 +8575,29 @@ body[data-performance="turbo"] {
 
 </body>
 </html>
+<!-- Ícone ChatGPT no Menu Iniciar / Área de Trabalho -->
+<div onclick="openChatGPT()" class="bg-gray-800 hover:bg-gray-700 p-4 rounded-xl flex flex-col items-center cursor-pointer shadow-lg w-24 h-24">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" alt="ChatGPT" class="w-10 h-10 mb-2">
+  <span class="text-xs text-center text-white">ChatGPT</span>
+</div>
+
+<!-- Script para abrir o ChatGPT -->
+<script>
+  function openChatGPT() {
+    window.open('https://chat.openai.com/', '_blank');
+  }
+</script>https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg<!-- ChatGPT estilo Xbox no Mini Windows -->
+<div onclick="openChatGPT()" 
+     class="bg-[#107C10] hover:bg-green-600 transition-all duration-200 text-white p-4 rounded-2xl flex flex-col items-center justify-center cursor-pointer shadow-xl w-24 h-24 border-2 border-green-300">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" 
+       alt="ChatGPT" class="w-10 h-10 mb-2 drop-shadow-md" />
+  <span class="text-xs font-semibold text-center">ChatGPT</span>
+</div>
+
+<script>
+  function openChatGPT() {
+    // Ativa modo desempenho se necessário
+    console.log("🎮 Modo Xbox ativado para ChatGPT");
+    window.open('https://chat.openai.com/', '_blank');
+  }
+</script>
