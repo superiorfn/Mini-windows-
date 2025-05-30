@@ -8530,3 +8530,48 @@ body[data-performance="turbo"] {
   color-scheme: dark;
 }
 </style>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Windows - GeForce NOW</title>
+  <script>
+    // Ativação do modo desempenho simulado
+    function activatePerformanceMode() {
+      console.log("🔥 Modo Desempenho ativado: CPU, GPU, RAM, 120Hz");
+      // Aqui você pode ativar seus scripts reais de performance
+    }
+
+    // Abrir GeForce NOW com otimizações
+    function openGeForceNow() {
+      activatePerformanceMode();
+      window.open('https://play.geforcenow.com/', '_blank');
+    }
+
+    // Detecção de controle/gamepad
+    window.addEventListener("gamepadconnected", (e) => {
+      alert("🎮 Controle conectado: " + e.gamepad.id);
+    });
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-white font-sans p-6">
+
+  <!-- Área de trabalho / menu iniciar -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+    <!-- Ícone do GeForce NOW -->
+    <div onclick="openGeForceNow()" class="bg-gray-800 hover:bg-gray-700 p-4 rounded-xl flex flex-col items-center cursor-pointer shadow-lg">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Nvidia_geforce_now_logo.png" class="w-12 h-12 mb-2" alt="GeForce NOW">
+      <span class="text-sm text-center">GeForce NOW</span>
+    </div>
+  </div>
+
+  <!-- Botão de atalho opcional -->
+  <div class="mt-6">
+    <button onclick="openGeForceNow()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl shadow-md">
+      🎮 Abrir GeForce NOW (Modo Desempenho)
+    </button>
+  </div>
+
+</body>
+</html>
