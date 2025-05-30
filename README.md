@@ -6808,3 +6808,178 @@ body[data-performance="reduzido"] {
   will-change: auto;
 }
 </style>
+<!-- Mini Windows com Modo Desempenho Inteligente + Alerta Térmico + Botão de Resfriamento --><!-- Botão de modo desempenho --><button onclick="togglePerformanceMode()" class="fixed top-44 right-4 bg-red-700 hover:bg-red-600 text-white px-3 py-1 rounded shadow">⚡ Modo Desempenho</button>
+
+<div id="performanceStatus" class="fixed top-56 right-4 bg-red-800 text-white px-4 py-1 rounded shadow text-sm">⚙️ Desempenho: Normal</div>
+<div id="sensorReadout" class="fixed top-72 right-4 bg-zinc-900 text-white text-sm p-2 rounded shadow w-64 hidden">
+  <h4 class="font-bold mb-1">📊 Monitor de Sistema</h4>
+  <div id="cpuTemp">🌡️ CPU: ---°C</div>
+  <div id="gpuTemp">🎮 GPU: ---°C</div>
+  <div id="usage">⚙️ Uso: ---%</div>
+  <button onclick="forceCoolDown()" class="mt-2 bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-xs">❄️ Resfriar Agora</button>
+</div><audio id="alertSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+
+<script>
+let performanceMode = false;
+let performanceInterval;
+let simulatedCPU = 50;
+let simulatedGPU = 55;
+
+function togglePerformanceMode() {
+  performanceMode = !performanceMode;
+  const status = document.getElementById("performanceStatus");
+  const monitor = document.getElementById("sensorReadout");
+  if (performanceMode) {
+    status.innerText = "⚙️ Desempenho: Máximo";
+    monitor.classList.remove("hidden");
+    try {
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen');
+      }
+    } catch (e) {
+      console.warn("WakeLock indisponível:", e);
+    }
+    document.body.setAttribute("data-performance", "ultra");
+    performanceInterval = setInterval(simulateSystemMonitor, 2000);
+  } else {
+    status.innerText = "⚙️ Desempenho: Normal";
+    monitor.classList.add("hidden");
+    document.body.setAttribute("data-performance", "auto");
+    clearInterval(performanceInterval);
+  }
+}
+
+function simulateSystemMonitor() {
+  simulatedCPU = Math.min(100, simulatedCPU + (Math.random() * 3 - 1.5));
+  simulatedGPU = Math.min(100, simulatedGPU + (Math.random() * 3 - 1.5));
+  const usage = (40 + Math.random() * 50).toFixed(0);
+
+  document.getElementById("cpuTemp").innerText = `🌡️ CPU: ${simulatedCPU.toFixed(1)}°C`;
+  document.getElementById("gpuTemp").innerText = `🎮 GPU: ${simulatedGPU.toFixed(1)}°C`;
+  document.getElementById("usage").innerText = `⚙️ Uso: ${usage}%`;
+
+  const alertSound = document.getElementById("alertSound");
+  const status = document.getElementById("performanceStatus");
+
+  if (simulatedCPU > 75 || simulatedGPU > 75) {
+    if (alertSound.paused) {
+      alertSound.play();
+    }
+    status.style.backgroundColor = "#b91c1c";
+    status.innerText = "⚠️ Modo Reduzido: Alta Temp";
+    document.body.setAttribute("data-performance", "reduzido");
+  } else if (performanceMode) {
+    status.style.backgroundColor = "#991b1b";
+    status.innerText = "⚙️ Desempenho: Máximo";
+    document.body.setAttribute("data-performance", "ultra");
+  }
+}
+
+function forceCoolDown() {
+  simulatedCPU = Math.max(25, simulatedCPU - 10);
+  simulatedGPU = Math.max(25, simulatedGPU - 10);
+  simulateSystemMonitor();
+}
+</script><style>
+:root {
+  --performance-hint: auto;
+}
+body[data-performance="ultra"] {
+  image-rendering: auto;
+  will-change: transform, opacity;
+  scroll-behavior: auto;
+}
+body[data-performance="reduzido"] {
+  filter: brightness(0.9);
+  transition: all 0.3s ease;
+  will-change: auto;
+}
+</style><!-- Mini Windows com Modo Desempenho Inteligente + Alerta Térmico + Botão de Resfriamento --><!-- Botão de modo desempenho --><button onclick="togglePerformanceMode()" class="fixed top-44 right-4 bg-red-700 hover:bg-red-600 text-white px-3 py-1 rounded shadow">⚡ Modo Desempenho</button>
+
+<div id="performanceStatus" class="fixed top-56 right-4 bg-red-800 text-white px-4 py-1 rounded shadow text-sm">⚙️ Desempenho: Normal</div>
+<div id="sensorReadout" class="fixed top-72 right-4 bg-zinc-900 text-white text-sm p-2 rounded shadow w-64 hidden">
+  <h4 class="font-bold mb-1">📊 Monitor de Sistema</h4>
+  <div id="cpuTemp">🌡️ CPU: ---°C</div>
+  <div id="gpuTemp">🎮 GPU: ---°C</div>
+  <div id="usage">⚙️ Uso: ---%</div>
+  <button onclick="forceCoolDown()" class="mt-2 bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-xs">❄️ Resfriar Agora</button>
+</div><audio id="alertSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+
+<script>
+let performanceMode = false;
+let performanceInterval;
+let simulatedCPU = 50;
+let simulatedGPU = 55;
+
+function togglePerformanceMode(forceOff = false) {
+  if (forceOff) performanceMode = true;
+  performanceMode = !performanceMode;
+  const status = document.getElementById("performanceStatus");
+  const monitor = document.getElementById("sensorReadout");
+  if (performanceMode) {
+    status.innerText = "⚙️ Desempenho: Máximo";
+    monitor.classList.remove("hidden");
+    try {
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen');
+      }
+    } catch (e) {
+      console.warn("WakeLock indisponível:", e);
+    }
+    document.body.setAttribute("data-performance", "ultra");
+    performanceInterval = setInterval(simulateSystemMonitor, 2000);
+  } else {
+    status.innerText = "⚙️ Desempenho: Normal";
+    monitor.classList.add("hidden");
+    document.body.setAttribute("data-performance", "auto");
+    clearInterval(performanceInterval);
+  }
+}
+
+function simulateSystemMonitor() {
+  simulatedCPU = Math.min(100, simulatedCPU + (Math.random() * 3 - 1.5));
+  simulatedGPU = Math.min(100, simulatedGPU + (Math.random() * 3 - 1.5));
+  const usage = (40 + Math.random() * 50).toFixed(0);
+
+  document.getElementById("cpuTemp").innerText = `🌡️ CPU: ${simulatedCPU.toFixed(1)}°C`;
+  document.getElementById("gpuTemp").innerText = `🎮 GPU: ${simulatedGPU.toFixed(1)}°C`;
+  document.getElementById("usage").innerText = `⚙️ Uso: ${usage}%`;
+
+  const alertSound = document.getElementById("alertSound");
+  const status = document.getElementById("performanceStatus");
+
+  if (simulatedCPU > 75 || simulatedGPU > 75) {
+    if (alertSound.paused) {
+      alertSound.play();
+    }
+    status.style.backgroundColor = "#b91c1c";
+    status.innerText = "⚠️ Modo Reduzido: Alta Temp";
+    document.body.setAttribute("data-performance", "reduzido");
+  } else if (performanceMode) {
+    status.style.backgroundColor = "#991b1b";
+    status.innerText = "⚙️ Desempenho: Máximo";
+    document.body.setAttribute("data-performance", "ultra");
+  }
+}
+
+function forceCoolDown() {
+  simulatedCPU = Math.max(25, simulatedCPU - 10);
+  simulatedGPU = Math.max(25, simulatedGPU - 10);
+  simulateSystemMonitor();
+  if (performanceMode) togglePerformanceMode(true); // Desativa modo desempenho
+}
+</script><style>
+:root {
+  --performance-hint: auto;
+}
+body[data-performance="ultra"] {
+  image-rendering: auto;
+  will-change: transform, opacity;
+  scroll-behavior: auto;
+}
+body[data-performance="reduzido"] {
+  filter: brightness(0.9);
+  transition: all 0.3s ease;
+  will-change: auto;
+}
+</style>
