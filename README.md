@@ -6607,3 +6607,59 @@ body[data-performance="ultra"] {
   scroll-behavior: auto;
 }
 </style>
+<!-- Mini Windows com Modo Desempenho Avançado --><!-- Botão de modo desempenho --><button onclick="togglePerformanceMode()" class="fixed top-44 right-4 bg-red-700 hover:bg-red-600 text-white px-3 py-1 rounded shadow">⚡ Modo Desempenho</button>
+
+<div id="performanceStatus" class="fixed top-56 right-4 bg-red-800 text-white px-4 py-1 rounded shadow text-sm">⚙️ Desempenho: Normal</div>
+<div id="sensorReadout" class="fixed top-72 right-4 bg-zinc-900 text-white text-sm p-2 rounded shadow w-64 hidden">
+  <h4 class="font-bold mb-1">📊 Monitor de Sistema</h4>
+  <div id="cpuTemp">🌡️ CPU: ---°C</div>
+  <div id="gpuTemp">🎮 GPU: ---°C</div>
+  <div id="usage">⚙️ Uso: ---%</div>
+</div><script>
+let performanceMode = false;
+let performanceInterval;
+
+function togglePerformanceMode() {
+  performanceMode = !performanceMode;
+  const status = document.getElementById("performanceStatus");
+  const monitor = document.getElementById("sensorReadout");
+  if (performanceMode) {
+    status.innerText = "⚙️ Desempenho: Máximo";
+    monitor.classList.remove("hidden");
+    try {
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen');
+      }
+    } catch (e) {
+      console.warn("WakeLock indisponível:", e);
+    }
+    document.body.style.setProperty("--performance-hint", "ultra");
+    performanceInterval = setInterval(simulateSystemMonitor, 2000);
+  } else {
+    status.innerText = "⚙️ Desempenho: Normal";
+    monitor.classList.add("hidden");
+    document.body.style.setProperty("--performance-hint", "auto");
+    clearInterval(performanceInterval);
+  }
+}
+
+function simulateSystemMonitor() {
+  // Simula dados de temperatura e uso
+  const cpu = (45 + Math.random() * 30).toFixed(1);
+  const gpu = (50 + Math.random() * 25).toFixed(1);
+  const usage = (40 + Math.random() * 50).toFixed(0);
+
+  document.getElementById("cpuTemp").innerText = `🌡️ CPU: ${cpu}°C`;
+  document.getElementById("gpuTemp").innerText = `🎮 GPU: ${gpu}°C`;
+  document.getElementById("usage").innerText = `⚙️ Uso: ${usage}%`;
+}
+</script><style>
+:root {
+  --performance-hint: auto;
+}
+body[data-performance="ultra"] {
+  image-rendering: auto;
+  will-change: transform, opacity;
+  scroll-behavior: auto;
+}
+</style>
