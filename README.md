@@ -7314,3 +7314,65 @@ function togglePerformanceMode(forceOff = false) {
   }
 }
 </script>
+<script>
+let lastFrame = 0;
+let frameCount = 0;
+let fpsDisplay = document.createElement('div');
+fpsDisplay.id = "fpsMonitor";
+fpsDisplay.className = "fixed bottom-4 right-4 bg-green-800 text-white px-3 py-1 rounded text-sm shadow";
+fpsDisplay.innerText = "🎯 120 Hz: Inativo";
+document.body.appendChild(fpsDisplay);
+
+let animationRunning = false;
+
+function start120HzLoop() {
+  animationRunning = true;
+  let prev = performance.now();
+  let frames = 0;
+
+  function animateLoop(now) {
+    if (!animationRunning) return;
+
+    const delta = now - prev;
+    if (delta >= 1000) {
+      const fps = frames;
+      fpsDisplay.innerText = `🎯 120 Hz: ${fps} FPS`;
+      fpsDisplay.style.backgroundColor = fps >= 110 ? "#166534" : "#b91c1c";
+      frames = 0;
+      prev = now;
+    }
+    frames++;
+    requestAnimationFrame(animateLoop);
+  }
+
+  requestAnimationFrame(animateLoop);
+}
+
+// Modifique a função togglePerformanceMode para ativar o loop:
+function togglePerformanceMode(forceOff = false) {
+  if (forceOff) performanceMode = true;
+  performanceMode = !performanceMode;
+  const status = document.getElementById("performanceStatus");
+  const monitor = document.getElementById("sensorReadout");
+  if (performanceMode) {
+    status.innerText = "⚙️ Desempenho: Máximo";
+    monitor.classList.remove("hidden");
+    try {
+      if ('wakeLock' in navigator) navigator.wakeLock.request('screen');
+    } catch (e) {}
+    document.body.setAttribute("data-performance", "ultra");
+    performanceInterval = setInterval(simulateSystemMonitor, 1500);
+    boostCPUPerformance();
+    boostGPUPerformance();
+    start120HzLoop(); // <- Aqui
+  } else {
+    status.innerText = "⚙️ Desempenho: Normal";
+    monitor.classList.add("hidden");
+    document.body.setAttribute("data-performance", "auto");
+    clearInterval(performanceInterval);
+    stopGPUBoost();
+    animationRunning = false;
+    document.getElementById("fpsMonitor").innerText = "🎯 120 Hz: Inativo";
+  }
+}
+</script>
