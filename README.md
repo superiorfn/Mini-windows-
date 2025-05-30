@@ -7976,3 +7976,226 @@ body[data-performance="turbo"] {
   color-scheme: dark;
 }
 </style>
+<!-- Botão no menu iniciar --><button onclick="document.getElementById('performancePanel').classList.toggle('hidden')" class="fixed bottom-6 left-6 bg-green-600 text-white px-4 py-2 rounded-full shadow-lg z-50">
+  ⚙️ Desempenho
+</button><!-- Gerenciador de Acessórios estilo Xbox --><div id="accessoryManager" class="fixed top-6 right-6 w-96 bg-gray-900 text-white p-4 rounded-2xl shadow-xl border border-blue-600 z-50 hidden">
+  <h2 class="text-xl font-bold mb-3 text-blue-400">Gerenciador de Acessórios</h2>
+  <p class="text-sm mb-2">Conecte e gerencie seus dispositivos Xbox: controles, headsets, teclado/mouse.</p>
+  <div class="space-y-3">
+    <div class="bg-gray-800 p-3 rounded">
+      <h3 class="font-semibold">Controle Xbox 1</h3>
+      <p>Status: Conectado</p>
+      <p>Bateria: 85%</p>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-blue-700 hover:bg-blue-600">⚙️ Configurar</button>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-green-700 hover:bg-green-600">🎮 Teste de Vibração</button>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-purple-700 hover:bg-purple-600">🎛️ Mapear Botões</button>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-yellow-600 hover:bg-yellow-500">🧬 Reduzir Input Lag</button>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-red-600 hover:bg-red-500">⬆️ Atualizar Firmware</button>
+    </div>
+    <div class="bg-gray-800 p-3 rounded">
+      <h3 class="font-semibold">Headset Sem Fio</h3>
+      <p>Status: Emparelhado</p>
+      <p>Bateria: 60%</p>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-blue-700 hover:bg-blue-600">🔊 Ajustes</button>
+    </div>
+  </div>
+</div><!-- Botão para abrir o Gerenciador --><button onclick="document.getElementById('accessoryManager').classList.toggle('hidden')" class="fixed bottom-20 left-6 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg z-50">
+  🎮 Acessórios
+</button><!-- Painel de Configurações de Desempenho estilo Xbox --><div id="performancePanel" class="fixed bottom-6 right-6 w-80 bg-gray-900 text-white p-4 rounded-2xl shadow-xl border border-green-600 z-50 hidden">
+  <h2 class="text-xl font-bold mb-3 text-green-400">Modo de Desempenho</h2>
+  <div class="space-y-2">
+    <button onclick="setPerformanceMode('normal')" class="w-full px-4 py-2 rounded bg-gray-800 hover:bg-gray-700">🔋 Normal</button>
+    <button onclick="setPerformanceMode('high')" class="w-full px-4 py-2 rounded bg-green-700 hover:bg-green-600">⚙️ Desempenho</button>
+    <button onclick="setPerformanceMode('turbo')" class="w-full px-4 py-2 rounded bg-red-700 hover:bg-red-600">🚀 Turbo</button>
+  </div>
+</div><script>
+function setPerformanceMode(mode) {
+  document.body.setAttribute("data-performance", mode);
+  const status = document.getElementById("performanceStatus");
+  const monitor = document.getElementById("sensorReadout");
+  if (monitor) monitor.classList.remove("hidden");
+
+  if ('wakeLock' in navigator) {
+    try { navigator.wakeLock.request('screen'); } catch (e) {}
+  }
+
+  if (mode === 'normal') {
+    status.innerText = "🔋 Modo: Normal";
+    stopGPUBoost();
+    animationRunning = false;
+    if (document.getElementById("fpsMonitor"))
+      document.getElementById("fpsMonitor").innerText = "🎯 120 Hz: Inativo";
+  }
+
+  if (mode === 'high') {
+    status.innerText = "⚙️ Modo: Desempenho";
+    boostCPUPerformance();
+    boostGPUPerformance();
+    start120HzLoop();
+    enterFullscreen();
+    checkRefreshRate();
+  }
+
+  if (mode === 'turbo') {
+    status.innerText = "🚀 Modo: Turbo";
+    boostCPUPerformance();
+    boostGPUPerformance();
+    optimizeRAMUsage();
+    reduceInputLag();
+    boostNetwork();
+    unlockBatteryLimits();
+    start120HzLoop();
+    enterFullscreen();
+    checkRefreshRate();
+  }
+}
+
+function boostNetwork() {
+  console.log("Otimização de rede ativada: priorizando jogos e apps em tempo real.");
+  // Exemplo fictício para priorização de tráfego
+}
+
+function unlockBatteryLimits() {
+  console.log("Limites de economia de bateria desativados: desempenho total liberado.");
+}
+
+function optimizeRAMUsage() {
+  console.log("Modo Turbo: uso intensivo de RAM habilitado.");
+  // Simulação de uso de cache e preload
+}
+
+function reduceInputLag() {
+  console.log("Input Lag mínimo ativado: otimizando eventos de entrada.");
+  document.body.style.touchAction = "manipulation";
+  document.body.style.pointerEvents = "auto";
+  window.addEventListener('pointermove', () => {}, { passive: true });
+}
+</script><style>
+body[data-performance="turbo"] *, 
+body[data-performance="turbo"] *::before, 
+body[data-performance="turbo"] *::after {
+  transition: none !important;
+  animation: none !important;
+  box-shadow: none !importan<!-- Botão no menu iniciar --><button onclick="document.getElementById('performancePanel').classList.toggle('hidden')" class="fixed bottom-6 left-6 bg-green-600 text-white px-4 py-2 rounded-full shadow-lg z-50">
+  ⚙️ Desempenho
+</button><!-- Gerenciador de Acessórios estilo Xbox --><div id="accessoryManager" class="fixed top-6 right-6 w-96 bg-gray-900 text-white p-4 rounded-2xl shadow-xl border border-blue-600 z-50 hidden">
+  <h2 class="text-xl font-bold mb-3 text-blue-400">Gerenciador de Acessórios</h2>
+  <p class="text-sm mb-2">Conecte e gerencie seus dispositivos Xbox: controles, headsets, teclado/mouse.</p>
+  <div class="space-y-3">
+    <div class="bg-gray-800 p-3 rounded">
+      <h3 class="font-semibold">Controle Xbox 1</h3>
+      <p>Status: Conectado</p>
+      <p>Bateria: 85%</p>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-blue-700 hover:bg-blue-600">⚙️ Configurar</button>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-green-700 hover:bg-green-600">🎮 Teste de Vibração</button>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-purple-700 hover:bg-purple-600">🎛️ Mapear Botões</button>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-yellow-600 hover:bg-yellow-500">🧬 Reduzir Input Lag</button>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-red-600 hover:bg-red-500">⬆️ Atualizar Firmware</button>
+    </div>
+    <div class="bg-gray-800 p-3 rounded">
+      <h3 class="font-semibold">Headset Sem Fio</h3>
+      <p>Status: Emparelhado</p>
+      <p>Bateria: 60%</p>
+      <button class="mt-2 text-sm px-3 py-1 rounded bg-blue-700 hover:bg-blue-600">🔊 Ajustes</button>
+    </div>
+  </div>
+</div><!-- Botão para abrir o Gerenciador --><button onclick="document.getElementById('accessoryManager').classList.toggle('hidden')" class="fixed bottom-20 left-6 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg z-50">
+  🎮 Acessórios
+</button><!-- Painel de Configurações de Desempenho estilo Xbox --><div id="performancePanel" class="fixed bottom-6 right-6 w-80 bg-gray-900 text-white p-4 rounded-2xl shadow-xl border border-green-600 z-50 hidden">
+  <h2 class="text-xl font-bold mb-3 text-green-400">Modo de Desempenho</h2>
+  <div class="space-y-2">
+    <button onclick="setPerformanceMode('normal')" class="w-full px-4 py-2 rounded bg-gray-800 hover:bg-gray-700">🔋 Normal</button>
+    <button onclick="setPerformanceMode('high')" class="w-full px-4 py-2 rounded bg-green-700 hover:bg-green-600">⚙️ Desempenho</button>
+    <button onclick="setPerformanceMode('turbo')" class="w-full px-4 py-2 rounded bg-red-700 hover:bg-red-600">🚀 Turbo</button>
+  </div>
+</div><script>
+function setPerformanceMode(mode) {
+  document.body.setAttribute("data-performance", mode);
+  const status = document.getElementById("performanceStatus");
+  const monitor = document.getElementById("sensorReadout");
+  if (monitor) monitor.classList.remove("hidden");
+
+  if ('wakeLock' in navigator) {
+    try { navigator.wakeLock.request('screen'); } catch (e) {}
+  }
+
+  if (mode === 'normal') {
+    status.innerText = "🔋 Modo: Normal";
+    stopGPUBoost();
+    animationRunning = false;
+    if (document.getElementById("fpsMonitor"))
+      document.getElementById("fpsMonitor").innerText = "🎯 120 Hz: Inativo";
+  }
+
+  if (mode === 'high') {
+    status.innerText = "⚙️ Modo: Desempenho";
+    boostCPUPerformance();
+    boostGPUPerformance();
+    start120HzLoop();
+    enterFullscreen();
+    checkRefreshRate();
+  }
+
+  if (mode === 'turbo') {
+    status.innerText = "🚀 Modo: Turbo";
+    boostCPUPerformance();
+    boostGPUPerformance();
+    optimizeRAMUsage();
+    reduceInputLag();
+    boostNetwork();
+    unlockBatteryLimits();
+    start120HzLoop();
+    enterFullscreen();
+    checkRefreshRate();
+  }
+}
+
+function boostNetwork() {
+  console.log("Otimização de rede ativada: priorizando jogos e apps em tempo real.");
+  // Exemplo fictício para priorização de tráfego
+}
+
+function unlockBatteryLimits() {
+  console.log("Limites de economia de bateria desativados: desempenho total liberado.");
+}
+
+function optimizeRAMUsage() {
+  console.log("Modo Turbo: uso intensivo de RAM habilitado.");
+  // Simulação de uso de cache e preload
+}
+
+function reduceInputLag() {
+  console.log("Input Lag mínimo ativado: otimizando eventos de entrada.");
+  document.body.style.touchAction = "manipulation";
+  document.body.style.pointerEvents = "auto";
+  window.addEventListener('pointermove', () => {}, { passive: true });
+}
+</script><style>
+body[data-performance="turbo"] *, 
+body[data-performance="turbo"] *::before, 
+body[data-performance="turbo"] *::after {
+  transition: none !important;
+  animation: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  image-rendering: pixelated !important;
+}
+
+body[data-performance="turbo"] {
+  transform: scale(0.9);
+  background: #000;
+  color-scheme: dark;
+}
+</stylet;
+  filter: none !important;
+  backdrop-filter: none !important;
+  image-rendering: pixelated !important;
+}
+
+body[data-performance="turbo"] {
+  transform: scale(0.9);
+  background: #000;
+  color-scheme: dark;
+}
+</style
