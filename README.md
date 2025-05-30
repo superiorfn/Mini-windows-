@@ -7209,3 +7209,108 @@ body[data-performance="frio"] {
   background-color: #0f172a;
 }
 </style>
+<!-- Adicione abaixo do script anterior -->
+
+<canvas id="gpuCanvas" width="256" height="256" class="hidden"></canvas>
+
+<script>
+let gpuLoopActive = false;
+
+function boostGPUPerformance() {
+  const canvas = document.getElementById("gpuCanvas");
+  canvas.classList.remove("hidden");
+  const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
+  if (!gl) {
+    console.warn("WebGL não suportado.");
+    return;
+  }
+
+  // Shader simples que gera uso da GPU
+  const vsSource = `
+    attribute vec4 aVertexPosition;
+    void main() {
+      gl_Position = aVertexPosition;
+    }
+  `;
+
+  const fsSource = `
+    precision mediump float;
+    void main() {
+      gl_FragColor = vec4(fract(sin(gl_FragCoord.x * 0.01) * 43758.5453),
+                          fract(sin(gl_FragCoord.y * 0.01) * 124.1234),
+                          0.0, 1.0);
+    }
+  `;
+
+  function compileShader(type, source) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    return shader;
+  }
+
+  const vertexShader = compileShader(gl.VERTEX_SHADER, vsSource);
+  const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fsSource);
+
+  const program = gl.createProgram();
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+  gl.useProgram(program);
+
+  const vertices = new Float32Array([
+    -1, -1, 1, -1, -1, 1,
+    -1, 1, 1, -1, 1, 1
+  ]);
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+  const pos = gl.getAttribLocation(program, "aVertexPosition");
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(pos);
+
+  gpuLoopActive = true;
+  function render() {
+    if (!gpuLoopActive) return;
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    requestAnimationFrame(render);
+  }
+
+  render();
+}
+
+function stopGPUBoost() {
+  gpuLoopActive = false;
+  document.getElementById("gpuCanvas").classList.add("hidden");
+}
+
+// Modifique togglePerformanceMode para chamar GPU boost:
+function togglePerformanceMode(forceOff = false) {
+  if (forceOff) performanceMode = true;
+  performanceMode = !performanceMode;
+  const status = document.getElementById("performanceStatus");
+  const monitor = document.getElementById("sensorReadout");
+  if (performanceMode) {
+    status.innerText = "⚙️ Desempenho: Máximo";
+    monitor.classList.remove("hidden");
+    try {
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen');
+      }
+    } catch (e) {}
+    document.body.setAttribute("data-performance", "ultra");
+    performanceInterval = setInterval(simulateSystemMonitor, 1500);
+    boostCPUPerformance();
+    boostGPUPerformance(); // Aqui
+  } else {
+    status.innerText = "⚙️ Desempenho: Normal";
+    monitor.classList.add("hidden");
+    document.body.setAttribute("data-performance", "auto");
+    clearInterval(performanceInterval);
+    stopGPUBoost(); // Aqui
+  }
+}
+</script>
