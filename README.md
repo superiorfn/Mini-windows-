@@ -1,4 +1,136 @@
-let usuarioAtual = null;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mini Xbox OS</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: "Segoe UI", sans-serif;
+      background: #000;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .desktop {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .taskbar {
+      height: 50px;
+      background: #0d0d0d;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      justify-content: space-between;
+    }
+
+    .start-btn img {
+      height: 32px;
+      width: 32px;
+      cursor: pointer;
+    }
+
+    .start-menu {
+      position: absolute;
+      bottom: 50px;
+      left: 10px;
+      width: 220px;
+      background: #1a1a1a;
+      color: #0f0;
+      border: 2px solid #0f0;
+      display: none;
+      padding: 10px;
+      z-index: 1000;
+    }
+
+    .start-menu ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .start-menu li {
+      padding: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .start-menu li:hover {
+      background-color: #0f0;
+      color: #000;
+    }
+
+    .menu-header {
+      font-weight: bold;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #0f0;
+      padding-bottom: 5px;
+    }
+
+    .clock {
+      color: #0f0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="desktop" id="desktop">
+    <div class="start-menu" id="startMenu">
+      <div class="menu-header">Mini Xbox OS</div>
+      <ul>
+        <li onclick="alert('🌐 Abrindo navegador...')">🌐 Navegador</li>
+        <li onclick="alert('🎮 Abrindo jogos...')">🎮 Jogos</li>
+        <li onclick="alert('📁 Abrindo apps...')">📁 Aplicativos</li>
+        <li onclick="setWallpaper()">🖼️ Mudar Wallpaper</li>
+      </ul>
+    </div>
+
+    <div class="taskbar">
+      <button class="start-btn" onclick="toggleMenu()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox_one_logo.svg" alt="Xbox" />
+      </button>
+      <span class="clock" id="clock"></span>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("startMenu");
+      menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").textContent = now.toLocaleTimeString();
+    }
+
+    function setWallpaper() {
+      const url = prompt("Digite a URL da imagem de fundo personalizada:");
+      if (url) {
+        document.body.style.backgroundImage = `url(${url})`;
+        localStorage.setItem("xbox_wallpaper", url);
+      }
+    }
+
+    window.onload = () => {
+      const saved = localStorage.getItem("xbox_wallpaper") || "https://wallpaperaccess.com/full/1105937.jpg";
+      document.body.style.backgroundImage = `url(${saved})`;
+      updateClock();
+      setInterval(updateClock, 1000);
+    };
+  </script>
+</body>
+</html>let usuarioAtual = null;
 
 function fazerLogin() {
   const email = document.getElementById("email").value;
