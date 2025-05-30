@@ -8697,3 +8697,54 @@ https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg<!-- ChatGPT
 
   <!-- Outros apps podem ir aqui -->
 </div>
+<div class="grid grid-cols-4 gap-4 p-4 bg-black text-white rounded-2xl w-full max-w-5xl mx-auto">
+
+  <!-- Instagram -->
+  <a href="https://www.instagram.com" target="_blank" class="bg-[#C13584] p-4 rounded-xl flex flex-col items-center justify-center shadow-xl hover:scale-105 transition">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="w-10 h-10 mb-2" />
+    <span class="text-xs text-center font-semibold">Instagram</span>
+  </a>
+
+  <!-- TikTok -->
+  <a href="https://www.tiktok.com" target="_blank" class="bg-black p-4 rounded-xl flex flex-col items-center justify-center shadow-xl hover:scale-105 transition">
+    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046120.png" class="w-10 h-10 mb-2" />
+    <span class="text-xs text-center font-semibold">TikTok</span>
+  </a>
+
+  <!-- YouTube Studio -->
+  <a href="https://studio.youtube.com" target="_blank" class="bg-[#FF0000] p-4 rounded-xl flex flex-col items-center justify-center shadow-xl hover:scale-105 transition">
+    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" class="w-10 h-10 mb-2" />
+    <span class="text-xs text-center font-semibold">YT Studio</span>
+  </a>
+
+  <!-- Spotify -->
+  <a href="https://open.spotify.com" target="_blank" class="bg-[#1DB954] p-4 rounded-xl flex flex-col items-center justify-center shadow-xl hover:scale-105 transition">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111624.png" class="w-10 h-10 mb-2" />
+    <span class="text-xs text-center font-semibold">Spotify</span>
+  </a>
+
+  <!-- Netflix -->
+  <a href="https://www.netflix.com" target="_blank" class="bg-[#E50914] p-4 rounded-xl flex flex-col items-center justify-center shadow-xl hover:scale-105 transition">
+    <img src="https://cdn-icons-png.flaticon.com/512/5977/5977590.png" class="w-10 h-10 mb-2" />
+    <span class="text-xs text-center font-semibold">Netflix</span>
+  </a>
+
+  <!-- Discord -->
+  <a href="https://discord.com/app" target="_blank" class="bg-[#5865F2] p-4 rounded-xl flex flex-col items-center justify-center shadow-xl hover:scale-105 transition">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" class="w-10 h-10 mb-2" />
+    <span class="text-xs text-center font-semibold">Discord</span>
+  </a>
+
+  <!-- Facebook -->
+  <a href="https://www.facebook.com" target="_blank" class="bg-[#3b5998] p-4 rounded-xl flex flex-col items-center justify-center shadow-xl hover:scale-105 transition">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" class="w-10 h-10 mb-2" />
+    <span class="text-xs text-center font-semibold">Facebook</span>
+  </a>
+
+  <!-- Twitter (X) -->
+  <a href="https://x.com" target="_blank" class="bg-black p-4 rounded-xl flex flex-col items-center justify-center shadow-xl hover:scale-105 transition">
+    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968958.png" class="w-10 h-10 mb-2" />
+    <span class="text-xs text-center font-semibold">Twitter / X</span>
+  </a>
+
+</div>
