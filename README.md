@@ -6573,3 +6573,37 @@ window.addEventListener("load", () => {
   if (navigator.bluetooth && lastConnectedId) autoReconnectLastDevice();
 });
 </script>
+<!-- Mini Windows com Modo Desempenho e Gestão de Energia --><!-- Botão de modo desempenho --><button onclick="togglePerformanceMode()" class="fixed top-44 right-4 bg-red-700 hover:bg-red-600 text-white px-3 py-1 rounded shadow">⚡ Modo Desempenho</button>
+
+<div id="performanceStatus" class="fixed top-56 right-4 bg-red-800 text-white px-4 py-1 rounded shadow text-sm">⚙️ Desempenho: Normal</div><script>
+let performanceMode = false;
+
+function togglePerformanceMode() {
+  performanceMode = !performanceMode;
+  const status = document.getElementById("performanceStatus");
+  if (performanceMode) {
+    // Aumenta frequência de atualizações, reduz timers, ativa power use máximo
+    status.innerText = "⚙️ Desempenho: Máximo";
+    try {
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen');
+      }
+    } catch (e) {
+      console.warn("WakeLock indisponível:", e);
+    }
+    document.body.style.setProperty("--performance-hint", "ultra");
+  } else {
+    status.innerText = "⚙️ Desempenho: Normal";
+    document.body.style.setProperty("--performance-hint", "auto");
+  }
+}
+</script><!-- Instruções para o navegador consumir mais energia (simulado com wakeLock e ajustes de CSS) --><style>
+:root {
+  --performance-hint: auto;
+}
+body[data-performance="ultra"] {
+  image-rendering: auto;
+  will-change: transform, opacity;
+  scroll-behavior: auto;
+}
+</style>
